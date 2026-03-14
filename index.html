@@ -1416,7 +1416,7 @@
     <div class="dash-welcome-sub" style="margin-bottom:28px;">أهلاً بك في فِكر — اختر مسارك وابدأ رحلتك</div>
 
     <!-- WhatsApp Banner -->
-    <a href="https://wa.me/21692647917?text=السلام%20عليكم%2C%20سجّلت%20في%20فِكر%20وأريد%20الانضمام%20للمجموعة" target="_blank" class="whatsapp-banner">
+    <a href="https://chat.whatsapp.com/CRbAZfLlzt21KLjkh4S5QF" target="_blank" class="whatsapp-banner">
       <span class="wa-icon">💬</span>
       <div>
         <div class="wa-title">انضم لمجموعة فِكر على واتساب</div>
@@ -1497,7 +1497,7 @@
       <div class="modal-icon">🔒</div>
       <div class="modal-title">هذا الدرس يتطلب اشتراكاً</div>
       <div class="modal-sub">تواصل معنا عبر واتساب لتفعيل اشتراكك والوصول لجميع الدروس</div>
-      <a href="https://wa.me/21692647917?text=السلام%20عليكم%2C%20أريد%20تفعيل%20اشتراك%20فِكر" target="_blank" class="modal-btn">💬 تواصل عبر واتساب</a>
+      <a href="https://chat.whatsapp.com/CRbAZfLlzt21KLjkh4S5QF" target="_blank" class="modal-btn">💬 تواصل عبر واتساب</a>
       <button class="modal-close" onclick="closeUpgrade()">لاحقاً</button>
     </div>
   </div>
@@ -1508,7 +1508,7 @@
       <div class="modal-icon">📖</div>
       <div class="modal-title" id="lesson-modal-title">الدرس</div>
       <div class="modal-sub">محتوى الدرس قيد الإعداد — تواصل مع المدرب عبر واتساب للحصول على الدرس الآن.</div>
-      <a href="https://wa.me/21692647917?text=السلام%20عليكم%2C%20أريد%20الوصول%20للدرس%20المجاني" target="_blank" class="modal-btn">💬 احصل على الدرس الآن</a>
+      <a href="https://chat.whatsapp.com/CRbAZfLlzt21KLjkh4S5QF" target="_blank" class="modal-btn">💬 احصل على الدرس الآن</a>
       <button class="modal-close" onclick="closeLesson()">إغلاق</button>
     </div>
   </div>
@@ -1530,6 +1530,10 @@
     onAuthStateChanged,
     sendPasswordResetEmail
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, getDoc, getDocs,
+    collection, updateDoc, serverTimestamp, query, orderBy
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // ── FIREBASE CONFIG ──
   const firebaseConfig = {
@@ -1543,10 +1547,15 @@
 
   const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ── ADMIN ──
+  const ADMIN_UID = 'lGj9dzVvqnNCAhk8F6OjmqiKMy02';
+  function isAdmin(user) { return user && user.uid === ADMIN_UID; }
 
   // ── SCREEN ROUTER ──
   window.showScreen = function(name) {
-    document.querySelectorAll('.screen, .auth-screen, .dashboard-screen')
+    document.querySelectorAll('.screen, .auth-screen, .dashboard-screen, .admin-screen')
       .forEach(s => s.classList.remove('active'));
     const el = document.getElementById('screen-' + name);
     if (el) el.classList.add('active');
@@ -1589,13 +1598,13 @@
   }
 
   // ── AUTH STATE LISTENER (auto-login) ──
-  onAuthStateChanged(auth, user => {
+  onAuthStateChanged(auth, async user => {
     if (user) {
       loadDashboard(user);
-      // Only redirect if currently on auth screens
       const active = document.querySelector('.auth-screen.active, #screen-landing.active');
-      if (active && active.id !== 'screen-dashboard') {
-        showScreen('dashboard');
+      if (active && active.id !== 'screen-dashboard' && active.id !== 'screen-admin') {
+        if (isAdmin(user)) { await loadAdmin(); showScreen('admin'); }
+        else showScreen('dashboard');
       }
     }
   });
@@ -1624,8 +1633,23 @@
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: name });
+      // Save user profile to Firestore
+      const phone   = document.getElementById('reg-phone').value.trim();
+      const country = document.getElementById('reg-country').value;
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        uid:           cred.user.uid,
+        fullName:      name,
+        email:         email,
+        phone:         phone,
+        country:       country,
+        subscription:  'trial',
+        whatsappJoined: false,
+        lessonsCompleted: [],
+        createdAt:     serverTimestamp(),
+      });
       loadDashboard(cred.user);
-      showScreen('dashboard');
+      if (isAdmin(cred.user)) { await loadAdmin(); showScreen('admin'); }
+      else showScreen('dashboard');
     } catch (err) {
       setError('register-error', friendlyError(err.code));
     } finally {
@@ -1647,7 +1671,8 @@
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
       loadDashboard(cred.user);
-      showScreen('dashboard');
+      if (isAdmin(cred.user)) { await loadAdmin(); showScreen('admin'); }
+      else showScreen('dashboard');
     } catch (err) {
       setError('login-error', friendlyError(err.code));
     } finally {
@@ -1690,6 +1715,79 @@
     document.getElementById('lesson-modal').style.display = 'none';
   }
 
+  // ── ADMIN FUNCTIONS ──
+  window.loadAdmin = async function() {
+    try {
+      const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      const users = [];
+      snap.forEach(d => users.push({ id: d.id, ...d.data() }));
+
+      // Stats
+      const total    = users.length;
+      const active   = users.filter(u => u.subscription === 'active').length;
+      const trial    = users.filter(u => u.subscription === 'trial').length;
+      const waJoined = users.filter(u => u.whatsappJoined).length;
+      const lessons  = users.reduce((sum, u) => sum + (u.lessonsCompleted?.length || 0), 0);
+
+      document.getElementById('adm-total').textContent    = total;
+      document.getElementById('adm-active').textContent   = active;
+      document.getElementById('adm-trial').textContent    = trial;
+      document.getElementById('adm-wa').textContent       = waJoined;
+      document.getElementById('adm-lessons').textContent  = lessons;
+
+      // Render table
+      const tbody = document.getElementById('adm-tbody');
+      tbody.innerHTML = '';
+      users.forEach(u => {
+        const date = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('ar-TN') : '—';
+        const subColor = u.subscription === 'active' ? '#16a34a' : u.subscription === 'trial' ? '#d97706' : '#dc2626';
+        const waIcon = u.whatsappJoined ? '✅' : '❌';
+        const lessons = u.lessonsCompleted?.length || 0;
+        tbody.innerHTML += `
+          <tr data-uid="${u.id}">
+            <td><strong>${u.fullName || '—'}</strong><br/><small style="color:#888">${u.email}</small></td>
+            <td>${u.country || '—'}</td>
+            <td>${u.phone || '—'}</td>
+            <td><span class="sub-badge" style="background:${subColor}20;color:${subColor};border:1px solid ${subColor}40">${u.subscription || 'trial'}</span></td>
+            <td style="text-align:center">${waIcon}</td>
+            <td style="text-align:center">${lessons}</td>
+            <td>${date}</td>
+            <td>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="adm-btn green" onclick="toggleSub('${u.id}','${u.subscription}')">
+                  ${u.subscription === 'active' ? '⏸ إيقاف' : '✅ تفعيل'}
+                </button>
+                <button class="adm-btn blue" onclick="toggleWa('${u.id}',${u.whatsappJoined})">
+                  ${u.whatsappJoined ? '❌ إزالة واتساب' : '✅ انضم واتساب'}
+                </button>
+              </div>
+            </td>
+          </tr>`;
+      });
+    } catch(e) {
+      console.error('Admin load error:', e);
+    }
+  }
+
+  window.toggleSub = async function(uid, current) {
+    const newStatus = current === 'active' ? 'trial' : 'active';
+    await updateDoc(doc(db, 'users', uid), { subscription: newStatus });
+    await loadAdmin();
+  }
+
+  window.toggleWa = async function(uid, current) {
+    await updateDoc(doc(db, 'users', uid), { whatsappJoined: !current });
+    await loadAdmin();
+  }
+
+  window.refreshAdmin = async function() {
+    const btn = document.getElementById('adm-refresh');
+    btn.textContent = 'جاري التحديث...';
+    await loadAdmin();
+    btn.textContent = '🔄 تحديث';
+  }
+
   // ── ENTER KEY ──
   document.addEventListener('keydown', e => {
     if (e.key !== 'Enter') return;
@@ -1699,5 +1797,143 @@
     if (active.id === 'screen-login')    window.handleLogin();
   });
 </script>
+
+<!-- ══════════════ ADMIN PANEL ══════════════ -->
+<style>
+  .admin-screen { min-height: 100vh; background: var(--ink); display: none; }
+  .admin-screen.active { display: block; }
+  .adm-nav {
+    background: var(--ink-soft); border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .adm-nav-logo { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--white); }
+  .adm-nav-logo span { color: var(--gold); }
+  .adm-badge { background: var(--gold); color: var(--ink); font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+  .adm-nav-right { display: flex; align-items: center; gap: 12px; }
+  .adm-nav-btn {
+    font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600;
+    padding: 8px 16px; border-radius: var(--r); border: none; cursor: pointer; transition: var(--transition);
+  }
+  .adm-nav-btn.outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); }
+  .adm-nav-btn.outline:hover { border-color: var(--white); color: var(--white); }
+  .adm-nav-btn.primary { background: var(--teal); color: var(--white); }
+  .adm-nav-btn.primary:hover { background: var(--teal-light); }
+
+  .adm-body { max-width: 1300px; margin: 0 auto; padding: 40px; }
+  .adm-title { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .adm-sub { color: rgba(255,255,255,0.4); font-size: 0.88rem; margin-bottom: 32px; }
+
+  /* Stats row */
+  .adm-stats { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 32px; }
+  .adm-stat {
+    background: var(--ink-soft); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r2); padding: 20px; text-align: center;
+    transition: var(--transition);
+  }
+  .adm-stat:hover { border-color: rgba(255,255,255,0.2); }
+  .adm-stat-val { font-family: var(--font-ui); font-size: 2rem; font-weight: 900; color: var(--gold); display: block; }
+  .adm-stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); font-family: var(--font-ui); margin-top: 4px; }
+
+  /* Table */
+  .adm-table-wrap {
+    background: var(--ink-soft); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r2); overflow: hidden;
+  }
+  .adm-table-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .adm-table-title { font-family: var(--font-ui); font-weight: 700; color: var(--white); font-size: 0.95rem; }
+  .adm-table { width: 100%; border-collapse: collapse; }
+  .adm-table th {
+    font-family: var(--font-ui); font-size: 0.75rem; font-weight: 700;
+    color: rgba(255,255,255,0.4); text-align: right; padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .adm-table td {
+    padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.75); font-family: var(--font-ui); font-size: 0.85rem;
+    vertical-align: middle;
+  }
+  .adm-table tr:hover td { background: rgba(255,255,255,0.03); }
+  .adm-table tr:last-child td { border-bottom: none; }
+  .sub-badge {
+    display: inline-block; font-family: var(--font-ui); font-size: 0.72rem;
+    font-weight: 700; padding: 3px 10px; border-radius: 99px;
+  }
+  .adm-btn {
+    font-family: var(--font-ui); font-size: 0.75rem; font-weight: 700;
+    padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer;
+    transition: var(--transition); white-space: nowrap;
+  }
+  .adm-btn.green { background: rgba(22,163,74,0.15); color: #4ade80; border: 1px solid rgba(22,163,74,0.3); }
+  .adm-btn.green:hover { background: rgba(22,163,74,0.25); }
+  .adm-btn.blue  { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+  .adm-btn.blue:hover  { background: rgba(59,130,246,0.25); }
+  .adm-empty { padding: 48px; text-align: center; color: rgba(255,255,255,0.3); font-family: var(--font-ui); }
+
+  @media (max-width:900px) {
+    .adm-stats { grid-template-columns: repeat(2,1fr); }
+    .adm-body { padding: 20px; }
+    .adm-nav { padding: 14px 20px; }
+    .adm-table-wrap { overflow-x: auto; }
+  }
+</style>
+
+<div id="screen-admin" class="admin-screen">
+  <nav class="adm-nav">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="adm-nav-logo">فِ<span>كر</span></div>
+      <span class="adm-badge">ADMIN</span>
+    </div>
+    <div class="adm-nav-right">
+      <button id="adm-refresh" class="adm-nav-btn primary" onclick="refreshAdmin()">🔄 تحديث</button>
+      <button class="adm-nav-btn outline" onclick="showScreen('dashboard')">لوحة المستخدم</button>
+      <button class="adm-nav-btn outline" onclick="handleLogout()">تسجيل الخروج</button>
+    </div>
+  </nav>
+
+  <div class="adm-body">
+    <div class="adm-title">لوحة تحكم المدير</div>
+    <div class="adm-sub">إدارة المستخدمين والاشتراكات</div>
+
+    <!-- Stats -->
+    <div class="adm-stats">
+      <div class="adm-stat"><span class="adm-stat-val" id="adm-total">—</span><div class="adm-stat-label">إجمالي المستخدمين</div></div>
+      <div class="adm-stat"><span class="adm-stat-val" id="adm-active" style="color:#4ade80">—</span><div class="adm-stat-label">اشتراكات نشطة</div></div>
+      <div class="adm-stat"><span class="adm-stat-val" id="adm-trial" style="color:#fbbf24">—</span><div class="adm-stat-label">تجريبي</div></div>
+      <div class="adm-stat"><span class="adm-stat-val" id="adm-wa" style="color:#34d399">—</span><div class="adm-stat-label">انضموا للواتساب</div></div>
+      <div class="adm-stat"><span class="adm-stat-val" id="adm-lessons" style="color:#a78bfa">—</span><div class="adm-stat-label">دروس مكتملة</div></div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="adm-table-wrap">
+      <div class="adm-table-header">
+        <span class="adm-table-title">👥 جميع المستخدمين</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="adm-table">
+          <thead>
+            <tr>
+              <th>المستخدم</th>
+              <th>البلد</th>
+              <th>الجوال</th>
+              <th>الاشتراك</th>
+              <th>واتساب</th>
+              <th>الدروس</th>
+              <th>تاريخ التسجيل</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="adm-tbody">
+            <tr><td colspan="8" class="adm-empty">جاري تحميل البيانات...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
