@@ -1409,6 +1409,7 @@
     <div class="dash-nav-right">
       <span class="dash-user" id="dash-username">مرحباً</span>
       <button class="btn-logout" onclick="handleLogout()">تسجيل الخروج</button>
+      <button onclick="openAdminPrompt()" title="Admin" style="background:none;border:none;cursor:pointer;color:var(--border);font-size:0.7rem;padding:4px 8px;opacity:0.3;transition:opacity 0.2s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.3'">⚙</button>
     </div>
   </nav>
   <div class="dash-body">
@@ -1550,8 +1551,11 @@
   const db   = getFirestore(app);
 
   // ── ADMIN ──
-  const ADMIN_UID = 'lGj9dzVvqnNCAhk8F6OjmqiKMy02';
-  function isAdmin(user) { return user && user.uid === ADMIN_UID; }
+  const ADMIN_PWD_HASH = '89d7a70d58c3b9137a487398d63c698f9b1652d177557031d158466119924f29';
+  async function hashPwd(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
 
   // ── SCREEN ROUTER ──
   window.showScreen = function(name) {
@@ -1602,9 +1606,8 @@
     if (user) {
       loadDashboard(user);
       const active = document.querySelector('.auth-screen.active, #screen-landing.active');
-      if (active && active.id !== 'screen-dashboard' && active.id !== 'screen-admin') {
-        if (isAdmin(user)) { await loadAdmin(); showScreen('admin'); }
-        else showScreen('dashboard');
+      if (active && active.id !== 'screen-dashboard') {
+        showScreen('dashboard');
       }
     }
   });
@@ -1648,8 +1651,7 @@
         createdAt:     serverTimestamp(),
       });
       loadDashboard(cred.user);
-      if (isAdmin(cred.user)) { await loadAdmin(); showScreen('admin'); }
-      else showScreen('dashboard');
+      showScreen('dashboard');
     } catch (err) {
       setError('register-error', friendlyError(err.code));
     } finally {
@@ -1671,8 +1673,7 @@
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
       loadDashboard(cred.user);
-      if (isAdmin(cred.user)) { await loadAdmin(); showScreen('admin'); }
-      else showScreen('dashboard');
+      showScreen('dashboard');
     } catch (err) {
       setError('login-error', friendlyError(err.code));
     } finally {
@@ -1713,6 +1714,19 @@
   }
   window.closeLesson = function() {
     document.getElementById('lesson-modal').style.display = 'none';
+  }
+
+  // ── ADMIN PASSWORD PROMPT ──
+  window.openAdminPrompt = async function() {
+    const pwd = prompt('🔐 كلمة مرور الإدارة:');
+    if (!pwd) return;
+    const hash = await hashPwd(pwd);
+    if (hash !== ADMIN_PWD_HASH) {
+      alert('❌ كلمة المرور غير صحيحة');
+      return;
+    }
+    await loadAdmin();
+    showScreen('admin');
   }
 
   // ── ADMIN FUNCTIONS ──
