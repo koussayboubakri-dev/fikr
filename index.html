@@ -1401,6 +1401,9 @@
   .modal-btn:hover { background: #1fbe5a; }
   .modal-close { font-family: var(--font-ui); font-size: 0.85rem; color: var(--text-soft); cursor: pointer; background: none; border: none; padding: 8px; }
   .modal-close:hover { color: var(--text); }
+  .adm-btn.gold  { background: rgba(200,146,42,0.15); color: #e8b84b; border: 1px solid rgba(200,146,42,0.3); }
+  .adm-btn.gold:hover  { background: rgba(200,146,42,0.25); }
+  #adm-search::placeholder { color: rgba(255,255,255,0.3); }
 </style>
 
 <div id="screen-dashboard" class="dashboard-screen">
@@ -1730,63 +1733,108 @@
   }
 
   // ── ADMIN FUNCTIONS ──
+  // Store all users globally for search/filter/export
+  let _allUsers = [];
+
+  function formatDate(ts) {
+    if (!ts?.toDate) return '—';
+    const d = ts.toDate();
+    return d.toLocaleDateString('ar-TN', { year:'numeric', month:'short', day:'numeric' });
+  }
+  function expiryStatus(u) {
+    if (u.subscription !== 'active') return { label: '—', color: '#6b7280' };
+    if (!u.expiresAt?.toDate) return { label: 'غير محدد', color: '#6b7280' };
+    const exp = u.expiresAt.toDate();
+    const now = new Date();
+    const days = Math.ceil((exp - now) / (1000*60*60*24));
+    if (days < 0)  return { label: 'منتهي', color: '#dc2626' };
+    if (days <= 7) return { label: `${days} أيام`, color: '#f59e0b' };
+    return { label: formatDate(u.expiresAt), color: '#16a34a' };
+  }
+
+  function renderTable(users) {
+    const tbody = document.getElementById('adm-tbody');
+    tbody.innerHTML = '';
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="9" class="adm-empty">لا توجد نتائج</td></tr>';
+      return;
+    }
+    users.forEach(u => {
+      const regDate  = formatDate(u.createdAt);
+      const expiry   = expiryStatus(u);
+      const subColor = u.subscription === 'active' ? '#16a34a' : u.subscription === 'trial' ? '#d97706' : '#dc2626';
+      const waIcon   = u.whatsappJoined ? '✅' : '❌';
+      const lessons  = u.lessonsCompleted?.length || 0;
+      const phone    = u.phone ? u.phone.replace(/\s/g,'') : '';
+      const waLink   = phone ? `https://wa.me/${phone.replace('+','')}` : '#';
+      tbody.innerHTML += `
+        <tr data-uid="${u.id}">
+          <td><strong style="color:#fff">${u.fullName || '—'}</strong><br/><small style="color:#888">${u.email}</small></td>
+          <td>${u.country || '—'}</td>
+          <td>
+            ${u.phone ? `<a href="${waLink}" target="_blank" class="adm-btn blue" style="text-decoration:none;display:inline-block">💬 ${u.phone}</a>` : '—'}
+          </td>
+          <td>
+            <span class="sub-badge" style="background:${subColor}20;color:${subColor};border:1px solid ${subColor}40">${u.subscription || 'trial'}</span>
+          </td>
+          <td style="color:${expiry.color};font-size:0.8rem;white-space:nowrap">${expiry.label}</td>
+          <td style="text-align:center">${waIcon}</td>
+          <td style="text-align:center;color:rgba(255,255,255,0.6)">${lessons}</td>
+          <td style="color:rgba(255,255,255,0.5);font-size:0.8rem;white-space:nowrap">${regDate}</td>
+          <td>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button class="adm-btn green" onclick="toggleSub('${u.id}','${u.subscription}')">
+                ${u.subscription === 'active' ? '⏸ إيقاف' : '✅ تفعيل'}
+              </button>
+              <button class="adm-btn blue" onclick="toggleWa('${u.id}',${u.whatsappJoined})">
+                ${u.whatsappJoined ? '❌ واتساب' : '✅ واتساب'}
+              </button>
+              <button class="adm-btn gold" onclick="setExpiry('${u.id}')">📅 انتهاء</button>
+            </div>
+          </td>
+        </tr>`;
+    });
+  }
+
   window.loadAdmin = async function() {
     try {
       const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
-      const users = [];
-      snap.forEach(d => users.push({ id: d.id, ...d.data() }));
+      _allUsers = [];
+      snap.forEach(d => _allUsers.push({ id: d.id, ...d.data() }));
 
       // Stats
-      const total    = users.length;
-      const active   = users.filter(u => u.subscription === 'active').length;
-      const trial    = users.filter(u => u.subscription === 'trial').length;
-      const waJoined = users.filter(u => u.whatsappJoined).length;
-      const lessons  = users.reduce((sum, u) => sum + (u.lessonsCompleted?.length || 0), 0);
+      document.getElementById('adm-total').textContent   = _allUsers.length;
+      document.getElementById('adm-active').textContent  = _allUsers.filter(u => u.subscription === 'active').length;
+      document.getElementById('adm-trial').textContent   = _allUsers.filter(u => u.subscription === 'trial').length;
+      document.getElementById('adm-wa').textContent      = _allUsers.filter(u => u.whatsappJoined).length;
+      document.getElementById('adm-lessons').textContent = _allUsers.reduce((s,u) => s+(u.lessonsCompleted?.length||0),0);
 
-      document.getElementById('adm-total').textContent    = total;
-      document.getElementById('adm-active').textContent   = active;
-      document.getElementById('adm-trial').textContent    = trial;
-      document.getElementById('adm-wa').textContent       = waJoined;
-      document.getElementById('adm-lessons').textContent  = lessons;
-
-      // Render table
-      const tbody = document.getElementById('adm-tbody');
-      tbody.innerHTML = '';
-      users.forEach(u => {
-        const date = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('ar-TN') : '—';
-        const subColor = u.subscription === 'active' ? '#16a34a' : u.subscription === 'trial' ? '#d97706' : '#dc2626';
-        const waIcon = u.whatsappJoined ? '✅' : '❌';
-        const lessons = u.lessonsCompleted?.length || 0;
-        tbody.innerHTML += `
-          <tr data-uid="${u.id}">
-            <td><strong>${u.fullName || '—'}</strong><br/><small style="color:#888">${u.email}</small></td>
-            <td>${u.country || '—'}</td>
-            <td>${u.phone || '—'}</td>
-            <td><span class="sub-badge" style="background:${subColor}20;color:${subColor};border:1px solid ${subColor}40">${u.subscription || 'trial'}</span></td>
-            <td style="text-align:center">${waIcon}</td>
-            <td style="text-align:center">${lessons}</td>
-            <td>${date}</td>
-            <td>
-              <div style="display:flex;gap:6px;flex-wrap:wrap">
-                <button class="adm-btn green" onclick="toggleSub('${u.id}','${u.subscription}')">
-                  ${u.subscription === 'active' ? '⏸ إيقاف' : '✅ تفعيل'}
-                </button>
-                <button class="adm-btn blue" onclick="toggleWa('${u.id}',${u.whatsappJoined})">
-                  ${u.whatsappJoined ? '❌ إزالة واتساب' : '✅ انضم واتساب'}
-                </button>
-              </div>
-            </td>
-          </tr>`;
-      });
+      renderTable(_allUsers);
     } catch(e) {
       console.error('Admin load error:', e);
+      document.getElementById('adm-tbody').innerHTML = '<tr><td colspan="9" class="adm-empty" style="color:#f87171">خطأ في تحميل البيانات — تأكد من قواعد Firestore</td></tr>';
     }
+  }
+
+  window.searchUsers = function() {
+    const q = document.getElementById('adm-search').value.trim().toLowerCase();
+    if (!q) return renderTable(_allUsers);
+    renderTable(_allUsers.filter(u =>
+      (u.fullName||'').toLowerCase().includes(q) ||
+      (u.email||'').toLowerCase().includes(q) ||
+      (u.phone||'').includes(q)
+    ));
   }
 
   window.toggleSub = async function(uid, current) {
     const newStatus = current === 'active' ? 'trial' : 'active';
-    await updateDoc(doc(db, 'users', uid), { subscription: newStatus });
+    const update = { subscription: newStatus };
+    if (newStatus === 'active') {
+      const exp = new Date(); exp.setDate(exp.getDate() + 30);
+      update.expiresAt = exp;
+    }
+    await updateDoc(doc(db, 'users', uid), update);
     await loadAdmin();
   }
 
@@ -1795,11 +1843,37 @@
     await loadAdmin();
   }
 
+  window.setExpiry = async function(uid) {
+    const val = prompt('تاريخ انتهاء الاشتراك (YYYY-MM-DD):');
+    if (!val) return;
+    const d = new Date(val);
+    if (isNaN(d)) return alert('تاريخ غير صحيح');
+    await updateDoc(doc(db, 'users', uid), { expiresAt: d });
+    await loadAdmin();
+  }
+
   window.refreshAdmin = async function() {
     const btn = document.getElementById('adm-refresh');
     btn.textContent = 'جاري التحديث...';
     await loadAdmin();
     btn.textContent = '🔄 تحديث';
+  }
+
+  window.exportCSV = function() {
+    if (!_allUsers.length) return alert('لا توجد بيانات');
+    const headers = ['الاسم','البريد','البلد','الجوال','الاشتراك','واتساب','الدروس','تاريخ التسجيل'];
+    const rows = _allUsers.map(u => [
+      u.fullName||'', u.email||'', u.country||'', u.phone||'',
+      u.subscription||'', u.whatsappJoined?'نعم':'لا',
+      u.lessonsCompleted?.length||0,
+      formatDate(u.createdAt)
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `fikr-users-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
   }
 
   // ── ENTER KEY ──
@@ -1925,6 +1999,16 @@
     <div class="adm-table-wrap">
       <div class="adm-table-header">
         <span class="adm-table-title">👥 جميع المستخدمين</span>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <input id="adm-search" type="text" placeholder="🔍 بحث بالاسم أو البريد أو الجوال..."
+            oninput="searchUsers()"
+            style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);
+                   color:#fff;padding:8px 14px;border-radius:8px;font-family:var(--font-ui);
+                   font-size:0.82rem;outline:none;min-width:240px;direction:rtl"/>
+          <button onclick="exportCSV()" class="adm-nav-btn" style="background:rgba(200,146,42,0.2);color:#e8b84b;border:1px solid rgba(200,146,42,0.3);font-size:0.82rem;padding:8px 14px">
+            📥 تصدير CSV
+          </button>
+        </div>
       </div>
       <div style="overflow-x:auto">
         <table class="adm-table">
@@ -1932,8 +2016,9 @@
             <tr>
               <th>المستخدم</th>
               <th>البلد</th>
-              <th>الجوال</th>
+              <th>الجوال / واتساب</th>
               <th>الاشتراك</th>
+              <th>انتهاء</th>
               <th>واتساب</th>
               <th>الدروس</th>
               <th>تاريخ التسجيل</th>
@@ -1941,7 +2026,7 @@
             </tr>
           </thead>
           <tbody id="adm-tbody">
-            <tr><td colspan="8" class="adm-empty">جاري تحميل البيانات...</td></tr>
+            <tr><td colspan="9" class="adm-empty">جاري تحميل البيانات...</td></tr>
           </tbody>
         </table>
       </div>
