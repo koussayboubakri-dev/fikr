@@ -1,0 +1,2400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>فِكر — تعلّم البرمجة بالعربية</title>
+  <!-- PWA -->
+  <link rel="icon" type="image/png" href="fikr-logo.png"/>
+  <link rel="apple-touch-icon" href="fikr-logo.png"/>
+  <meta name="theme-color" content="#1a6b72"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="فِكر"/>
+  <link rel="manifest" href="manifest.json"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─── */
+    :root {
+      --ink:        #0d0f14;
+      --ink-soft:   #1a1d26;
+      --surface:    #f5f3ee;
+      --surface-2:  #eceae3;
+      --gold:       #c8922a;
+      --gold-light: #e8b84b;
+      --gold-pale:  #f5e6c8;
+      --teal:       #1a6b72;
+      --teal-light: #2a9aa5;
+      --teal-pale:  #d0ecef;
+      --red:        #c0392b;
+      --white:      #ffffff;
+      --text:       #1a1d26;
+      --text-soft:  #5a5e6e;
+      --border:     #d8d4c8;
+      --shadow:     0 4px 24px rgba(13,15,20,0.10);
+      --shadow-lg:  0 12px 48px rgba(13,15,20,0.16);
+
+      --font-display: 'Amiri', serif;
+      --font-body:    'Tajawal', sans-serif;
+      --font-ui:      'Cairo', sans-serif;
+
+      --r:  12px;
+      --r2: 20px;
+      --transition: 0.25s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ─── RESET ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--surface);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ─── SCREENS ─── */
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: block; }
+
+    /* ══════════════════════════════════════════════
+       LANDING PAGE
+    ══════════════════════════════════════════════ */
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(245,243,238,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--teal);
+      letter-spacing: 1px;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+    .nav-link {
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      padding: 8px 16px;
+      border-radius: var(--r);
+      transition: var(--transition);
+    }
+    .nav-link:hover { color: var(--teal); background: var(--teal-pale); }
+    .btn-nav {
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--white);
+      background: var(--teal);
+      padding: 10px 24px;
+      border-radius: var(--r);
+      transition: var(--transition);
+      box-shadow: 0 2px 8px rgba(26,107,114,0.3);
+    }
+    .btn-nav:hover { background: var(--teal-light); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 80% 20%, rgba(26,107,114,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 10% 80%, rgba(200,146,42,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    /* Decorative Arabic calligraphy background */
+    .hero-deco {
+      position: absolute;
+      top: 50%; right: -40px;
+      transform: translateY(-50%);
+      font-family: var(--font-display);
+      font-size: 28vw;
+      color: rgba(26,107,114,0.04);
+      font-weight: 700;
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+    }
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold-pale);
+      border: 1px solid rgba(200,146,42,0.3);
+      color: var(--gold);
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 99px;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+    .hero-tag::before { content: '✦'; font-size: 0.7rem; }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+    .hero-title .accent { color: var(--teal); }
+    .hero-title .gold-accent { color: var(--gold); }
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-soft);
+      margin-bottom: 40px;
+      max-width: 480px;
+      line-height: 1.8;
+    }
+    .hero-cta {
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+    .btn-primary {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--white);
+      background: var(--teal);
+      padding: 14px 32px;
+      border-radius: var(--r);
+      transition: var(--transition);
+      box-shadow: 0 4px 16px rgba(26,107,114,0.35);
+    }
+    .btn-primary:hover { background: var(--teal-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,107,114,0.4); }
+    .btn-secondary {
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--teal);
+      background: var(--white);
+      border: 1.5px solid var(--teal);
+      padding: 14px 32px;
+      border-radius: var(--r);
+      transition: var(--transition);
+    }
+    .btn-secondary:hover { background: var(--teal-pale); }
+
+    /* Hero visual */
+    .hero-visual {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .code-card {
+      background: var(--ink);
+      border-radius: var(--r2);
+      padding: 24px 28px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .code-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+    }
+    .code-dots { display: flex; gap: 6px; margin-bottom: 16px; }
+    .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .code-dot:nth-child(1) { background: #ff5f57; }
+    .code-dot:nth-child(2) { background: #febc2e; }
+    .code-dot:nth-child(3) { background: #28c840; }
+    .code-body { font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 2; }
+    .c-kw { color: #bd93f9; }
+    .c-fn { color: #50fa7b; }
+    .c-str { color: #f1fa8c; }
+    .c-cmt { color: #6272a4; }
+    .c-var { color: #8be9fd; }
+    .c-num { color: #ffb86c; }
+
+    .stat-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 20px;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .stat-card:hover { border-color: var(--teal); transform: translateY(-2px); box-shadow: var(--shadow); }
+    .stat-num {
+      font-family: var(--font-ui);
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--teal);
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      font-weight: 500;
+    }
+
+    /* SECTION BASE */
+    .section { padding: 100px 40px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-tag {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--text-soft);
+      max-width: 560px;
+      line-height: 1.8;
+    }
+    .section-head { margin-bottom: 60px; }
+
+    /* HOW IT WORKS */
+    .how-bg { background: var(--ink-soft); }
+    .how-bg .section-title { color: var(--white); }
+    .how-bg .section-tag { color: var(--gold-light); }
+    .how-bg .section-sub { color: rgba(255,255,255,0.6); }
+
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+    .step {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 40px 28px;
+      position: relative;
+      transition: var(--transition);
+    }
+    .step:first-child { border-radius: var(--r2) 0 0 var(--r2); }
+    .step:last-child  { border-radius: 0 var(--r2) var(--r2) 0; }
+    .step:hover { background: rgba(255,255,255,0.08); }
+    .step-num {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      font-weight: 700;
+      color: rgba(200,146,42,0.2);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .step-icon { font-size: 2rem; margin-bottom: 16px; }
+    .step-title {
+      font-family: var(--font-ui);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .step-desc {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.7;
+    }
+
+    /* COURSES */
+    .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .tier-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r2);
+      padding: 36px 28px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .tier-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    }
+    .tier-card.asghar::before  { background: linear-gradient(90deg, #2a9aa5, #1a6b72); }
+    .tier-card.mutawassit::before { background: linear-gradient(90deg, #c8922a, #e8b84b); }
+    .tier-card.kabir::before   { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
+    .tier-card:hover { border-color: var(--teal); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .tier-badge {
+      display: inline-block;
+      font-family: var(--font-ui);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 20px;
+    }
+    .tier-card.asghar  .tier-badge { background: var(--teal-pale);  color: var(--teal); }
+    .tier-card.mutawassit .tier-badge { background: var(--gold-pale);  color: var(--gold); }
+    .tier-card.kabir   .tier-badge { background: #ede9fe; color: #6d28d9; }
+    .tier-icon { font-size: 2.5rem; margin-bottom: 16px; }
+    .tier-name {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .tier-age {
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .tier-desc {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      line-height: 1.75;
+      margin-bottom: 20px;
+    }
+    .tier-lessons {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .tier-lesson {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      color: var(--text-soft);
+    }
+    .tier-lesson::before { content: '◆'; color: var(--gold); font-size: 0.5rem; flex-shrink: 0; }
+
+    /* VALUES */
+    .values-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .value-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      padding: 36px;
+      display: flex; gap: 20px; align-items: flex-start;
+      transition: var(--transition);
+    }
+    .value-card:hover { border-color: var(--gold); transform: translateX(-4px); }
+    .value-icon {
+      width: 52px; height: 52px;
+      background: var(--gold-pale);
+      border-radius: var(--r);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .value-title {
+      font-family: var(--font-ui);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .value-desc {
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      line-height: 1.75;
+    }
+
+    /* PRICING */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 900px; margin: 0 auto; }
+    .price-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r2);
+      padding: 36px 28px;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+    }
+    .price-card.featured {
+      background: var(--teal);
+      border-color: var(--teal);
+      transform: scale(1.04);
+      box-shadow: var(--shadow-lg);
+    }
+    .price-card.featured * { color: var(--white) !important; }
+    .price-card.featured .price-btn { background: var(--white); color: var(--teal) !important; }
+    .price-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--white);
+      font-family: var(--font-ui);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+    .price-country {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .price-amount {
+      font-family: var(--font-ui);
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .price-currency {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      display: block;
+      margin-bottom: 20px;
+    }
+    .price-features {
+      list-style: none;
+      text-align: right;
+      margin-bottom: 28px;
+    }
+    .price-features li {
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .price-features li::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; }
+    .price-btn {
+      width: 100%;
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--white);
+      background: var(--teal);
+      padding: 13px;
+      border-radius: var(--r);
+      transition: var(--transition);
+    }
+    .price-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* TESTIMONIAL */
+    .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .testimonial {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      padding: 28px;
+      transition: var(--transition);
+    }
+    .testimonial:hover { border-color: var(--teal); box-shadow: var(--shadow); }
+    .t-stars { color: var(--gold); font-size: 1rem; margin-bottom: 14px; letter-spacing: 2px; }
+    .t-text {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.8;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    .t-author {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .t-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--teal-pale);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .t-name {
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .t-role { font-size: 0.75rem; color: var(--text-soft); }
+
+    /* CTA BANNER */
+    .cta-banner {
+      background: var(--teal);
+      padding: 80px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-banner::before {
+      content: 'فِكر';
+      position: absolute;
+      font-family: var(--font-display);
+      font-size: 20vw;
+      color: rgba(255,255,255,0.04);
+      font-weight: 700;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .cta-banner .section-title { color: var(--white); margin-bottom: 16px; }
+    .cta-banner .section-sub { color: rgba(255,255,255,0.7); margin: 0 auto 36px; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+    .btn-white {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--teal);
+      background: var(--white);
+      padding: 14px 36px;
+      border-radius: var(--r);
+      transition: var(--transition);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .btn-outline-white {
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--white);
+      border: 1.5px solid rgba(255,255,255,0.5);
+      padding: 14px 36px;
+      border-radius: var(--r);
+      transition: var(--transition);
+    }
+    .btn-outline-white:hover { background: rgba(255,255,255,0.1); }
+
+    /* FOOTER */
+    .footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.5);
+      padding: 60px 40px 32px;
+    }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px;
+      margin-bottom: 48px;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .footer-logo span { color: var(--gold); }
+    .footer-desc { font-size: 0.88rem; line-height: 1.8; max-width: 300px; }
+    .footer-col h4 {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li { font-size: 0.85rem; }
+    .footer-col ul li a:hover { color: var(--white); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.8rem;
+    }
+
+    /* ══════════════════════════════════════════════
+       AUTH SCREENS
+    ══════════════════════════════════════════════ */
+    .auth-screen {
+      min-height: 100vh;
+      display: none;
+      background: var(--surface);
+    }
+    .auth-screen.active { display: flex; }
+    .auth-split {
+      display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh;
+    }
+    /* Left panel */
+    .auth-panel-left {
+      background: var(--teal);
+      padding: 60px;
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-panel-left::before {
+      content: 'فِكر';
+      position: absolute;
+      font-family: var(--font-display);
+      font-size: 22vw;
+      color: rgba(255,255,255,0.04);
+      font-weight: 700;
+      bottom: -4vw; left: -2vw;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .auth-panel-brand {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .auth-panel-brand span { color: var(--gold-light); }
+    .auth-panel-text { position: relative; z-index: 1; }
+    .auth-panel-title {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .auth-panel-sub {
+      color: rgba(255,255,255,0.65);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .auth-panel-features {
+      display: flex; flex-direction: column; gap: 12px;
+      position: relative; z-index: 1;
+    }
+    .auth-feat {
+      display: flex; align-items: center; gap: 12px;
+      color: rgba(255,255,255,0.8);
+      font-family: var(--font-ui);
+      font-size: 0.88rem;
+    }
+    .auth-feat-icon {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    /* Right panel */
+    .auth-panel-right {
+      padding: 60px;
+      display: flex; flex-direction: column; justify-content: center;
+      overflow-y: auto;
+    }
+    .auth-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      margin-bottom: 40px;
+      transition: var(--transition);
+    }
+    .auth-back:hover { color: var(--teal); }
+    .auth-form-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .auth-form-sub {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .form-input {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--text);
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      padding: 12px 16px;
+      transition: var(--transition);
+      outline: none;
+    }
+    .form-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26,107,114,0.1); }
+    .form-input::placeholder { color: rgba(90,94,110,0.5); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: var(--red);
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      padding: 12px 16px;
+      border-radius: var(--r);
+      margin-bottom: 20px;
+      display: none;
+    }
+    .form-error.visible { display: block; }
+    .btn-submit {
+      width: 100%;
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--white);
+      background: var(--teal);
+      padding: 14px;
+      border-radius: var(--r);
+      transition: var(--transition);
+      box-shadow: 0 4px 16px rgba(26,107,114,0.3);
+      margin-top: 8px;
+    }
+    .btn-submit:hover { background: var(--teal-light); transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .auth-switch {
+      text-align: center;
+      margin-top: 24px;
+      font-family: var(--font-ui);
+      font-size: 0.88rem;
+      color: var(--text-soft);
+    }
+    .auth-switch a {
+      color: var(--teal);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .auth-switch a:hover { text-decoration: underline; }
+    .forgot-link {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      color: var(--teal);
+      cursor: pointer;
+      float: left;
+    }
+    .forgot-link:hover { text-decoration: underline; }
+
+    /* DASHBOARD */
+    .dashboard-screen {
+      min-height: 100vh;
+      background: var(--surface);
+      display: none;
+    }
+    .dashboard-screen.active { display: block; }
+    .dash-nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .dash-nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--teal);
+    }
+    .dash-nav-logo span { color: var(--gold); }
+    .dash-nav-right { display: flex; align-items: center; gap: 16px; }
+    .dash-user {
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .btn-logout {
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      transition: var(--transition);
+    }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+    .dash-body { max-width: 1100px; margin: 0 auto; padding: 48px 40px; }
+    .dash-welcome {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .dash-welcome-sub { color: var(--text-soft); font-size: 0.95rem; margin-bottom: 40px; }
+    .dash-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+    .dash-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      padding: 28px;
+    }
+    .dash-card-label {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .dash-card-val {
+      font-family: var(--font-ui);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--teal);
+    }
+    .dash-section-title {
+      font-family: var(--font-ui);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+    .dash-info-box {
+      background: var(--teal-pale);
+      border: 1px solid rgba(26,107,114,0.2);
+      border-radius: var(--r2);
+      padding: 32px;
+      text-align: center;
+    }
+    .dash-info-box p {
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      color: var(--teal);
+      line-height: 1.8;
+    }
+    .dash-info-box strong { font-weight: 700; }
+
+    /* MASCOT */
+    
+    
+    
+    
+    
+    
+    
+    
+      50%      { transform: translateY(-12px); }
+    }
+    
+      to   { transform: translateY(-8px) scale(1.05); }
+    }
+    
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    .anim-fade-up { animation: fadeUp 0.6s ease both; }
+    .anim-delay-1 { animation-delay: 0.1s; }
+    .anim-delay-2 { animation-delay: 0.2s; }
+    .anim-delay-3 { animation-delay: 0.3s; }
+    .anim-delay-4 { animation-delay: 0.4s; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .nav { padding: 14px 20px; }
+      .hero { padding: 100px 20px 60px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .hero-visual { display: none; }
+      .section { padding: 60px 20px; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .step:first-child { border-radius: var(--r2) var(--r2) 0 0; }
+      .step:last-child { border-radius: 0 0 var(--r2) var(--r2); }
+      .tiers { grid-template-columns: 1fr; }
+      .values-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+      .price-card.featured { transform: none; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .auth-split { grid-template-columns: 1fr; }
+      .auth-panel-left { display: none; }
+      .auth-panel-right { padding: 40px 24px; }
+      .form-row { grid-template-columns: 1fr; }
+      .dash-cards { grid-template-columns: 1fr; }
+      .dash-body { padding: 32px 20px; }
+      .dash-nav { padding: 14px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ LANDING ══════════════ -->
+<div id="screen-landing" class="screen active">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo">فِ<span>كر</span></div>
+    <div class="nav-links">
+      <a href="#courses" class="nav-link">المسارات</a>
+      <a href="#values"  class="nav-link">قيمنا</a>
+      <a href="#pricing" class="nav-link">الأسعار</a>
+      <button class="nav-link" onclick="showScreen('login')">تسجيل الدخول</button>
+      <button class="btn-nav" onclick="showScreen('register')">ابدأ مجاناً</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-deco">ف</div>
+    <div class="hero-inner">
+      <div class="hero-text anim-fade-up">
+        <div class="hero-tag">منصة البرمجة العربية الأولى للأطفال</div>
+        <h1 class="hero-title">
+          علّم طفلك<br/>
+          <span class="accent">البرمجة</span> بلغته<br/>
+          <span class="gold-accent">العربية</span>
+        </h1>
+        <p class="hero-subtitle">
+          فِكر منصة تعليمية تفاعلية تعلّم الأطفال العرب من سن ٨ إلى ١٦ البرمجة بأسلوب ممتع وبمحتوى أصيل يتناسب مع قيمنا وثقافتنا.
+        </p>
+        <div class="hero-cta">
+          <button class="btn-primary" onclick="showScreen('register')">ابدأ التجربة المجانية</button>
+          <a href="#courses" class="btn-secondary">استعرض المسارات</a>
+        </div>
+      </div>
+      <div class="hero-visual anim-fade-up anim-delay-2">
+        <div class="code-card">
+          <div class="code-dots">
+            <div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div>
+          </div>
+          <div class="code-body">
+            <div><span class="c-cmt"># درس ١: مرحباً بالعالم</span></div>
+            <div>&nbsp;</div>
+            <div><span class="c-kw">def</span> <span class="c-fn">مرحباً</span>(<span class="c-var">اسم</span>):</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">return</span> <span class="c-str">f"أهلاً {اسم}!"</span></div>
+            <div>&nbsp;</div>
+            <div><span class="c-var">رسالة</span> = <span class="c-fn">مرحباً</span>(<span class="c-str">"أحمد"</span>)</div>
+            <div><span class="c-fn">print</span>(<span class="c-var">رسالة</span>)</div>
+          </div>
+        </div>
+        <div class="stat-row" style="width:100%">
+          <div class="stat-card"><span class="stat-num">٣</span><span class="stat-label">مسارات تعليمية</span></div>
+          <div class="stat-card"><span class="stat-num">١٢+</span><span class="stat-label">درس تفاعلي</span></div>
+          <div class="stat-card"><span class="stat-num">١٠٠٪</span><span class="stat-label">بالعربية</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section how-bg" id="how">
+    <div class="section-inner">
+      <div class="section-head">
+        <span class="section-tag">كيف يعمل فِكر؟</span>
+        <h2 class="section-title">أربع خطوات للبدء</h2>
+        <p class="section-sub">رحلة تعليمية مبنية بعناية لتناسب كل طفل</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">١</div>
+          <div class="step-icon">👨‍👩‍👦</div>
+          <div class="step-title">سجّل حساب الوالدين</div>
+          <div class="step-desc">أنشئ حسابك كولي أمر وأضف أبناءك مع تحديد أعمارهم ومستوياتهم.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">٢</div>
+          <div class="step-icon">🗺️</div>
+          <div class="step-title">اختر المسار المناسب</div>
+          <div class="step-desc">نظام ذكي يقترح المسار الأنسب بناءً على عمر طفلك وخبرته.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">٣</div>
+          <div class="step-icon">🎮</div>
+          <div class="step-title">تعلّم باللعب</div>
+          <div class="step-desc">دروس تفاعلية بالعربية، تحديات مشوّقة، ونقاط خبرة تحفّز الاستمرار.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">٤</div>
+          <div class="step-icon">📊</div>
+          <div class="step-title">تابع التقدم</div>
+          <div class="step-desc">لوحة تحكم للوالدين تُظهر تقدم الأبناء ودرجاتهم وشاراتهم.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COURSES -->
+  <section class="section" id="courses">
+    <div class="section-inner">
+      <div class="section-head">
+        <span class="section-tag">المسارات التعليمية</span>
+        <h2 class="section-title">ثلاثة مسارات، كل شيء بالعربية</h2>
+        <p class="section-sub">مصمّمة لتناسب كل فئة عمرية من الصغار حتى المراهقين</p>
+      </div>
+      <div class="tiers">
+        <div class="tier-card asghar">
+          <div class="tier-badge">الأصغر</div>
+          <div class="tier-icon">🌱</div>
+          <div class="tier-name">الأصغر</div>
+          <div class="tier-age">٨ — ١١ سنة · Scratch</div>
+          <div class="tier-desc">أول خطوة في عالم البرمجة بأسلوب مرئي ممتع، يبني الأساس بدون كتابة كود.</div>
+          <div class="tier-lessons">
+            <div class="tier-lesson">مقدمة في التفكير المنطقي</div>
+            <div class="tier-lesson">الحلقات والشروط بصرياً</div>
+            <div class="tier-lesson">بناء لعبة بسيطة</div>
+            <div class="tier-lesson">مشروع نهائي تفاعلي</div>
+          </div>
+        </div>
+        <div class="tier-card mutawassit">
+          <div class="tier-badge">المتوسط</div>
+          <div class="tier-icon">⚡</div>
+          <div class="tier-name">المتوسط</div>
+          <div class="tier-age">١١ — ١٤ سنة · Python</div>
+          <div class="tier-desc">انتقال سلس إلى Python بالعربية، مع تطبيقات حقيقية وتحديات إبداعية.</div>
+          <div class="tier-lessons">
+            <div class="tier-lesson">أساسيات Python بالعربية</div>
+            <div class="tier-lesson">المتغيرات والدوال</div>
+            <div class="tier-lesson">معالجة البيانات</div>
+            <div class="tier-lesson">مشاريع تطبيقية</div>
+          </div>
+        </div>
+        <div class="tier-card kabir">
+          <div class="tier-badge">المتقدم</div>
+          <div class="tier-icon">🚀</div>
+          <div class="tier-name">الكبير</div>
+          <div class="tier-age">١٤ — ١٦ سنة · Python + Web</div>
+          <div class="tier-desc">Python متقدم وتطوير ويب أساسي، بناء مشاريع حقيقية تُضاف للسيرة الذاتية.</div>
+          <div class="tier-lessons">
+            <div class="tier-lesson">Python متقدم والخوارزميات</div>
+            <div class="tier-lesson">HTML / CSS الأساسيات</div>
+            <div class="tier-lesson">JavaScript المدخل</div>
+            <div class="tier-lesson">مشروع تخرج متكامل</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="section" id="values" style="background: var(--surface-2);">
+    <div class="section-inner">
+      <div class="section-head">
+        <span class="section-tag">قيمنا</span>
+        <h2 class="section-title">تعليم يحترم هويتك</h2>
+        <p class="section-sub">فِكر لم يُبنَ على نسخ منصات غربية — بُني من الصفر لأبنائنا</p>
+      </div>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">🌙</div>
+          <div>
+            <div class="value-title">قيم إسلامية أصيلة</div>
+            <div class="value-desc">محتوى يتوافق مع قيمنا الإسلامية، أمثلة من واقعنا، وبيئة آمنة تحترم الهوية.</div>
+          </div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🗣️</div>
+          <div>
+            <div class="value-title">العربية أولاً</div>
+            <div class="value-desc">كل درس، كل شرح، كل تغذية راجعة — بالعربية الفصحى الواضحة. لأن اللغة هوية.</div>
+          </div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">👨‍👩‍👦</div>
+          <div>
+            <div class="value-title">الوالدان في الصورة</div>
+            <div class="value-desc">لوحة تحكم للوالدين تُظهر كل خطوة يخطوها الطفل. شفافية كاملة وتواصل مستمر.</div>
+          </div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🎯</div>
+          <div>
+            <div class="value-title">منهج متدرج ومدروس</div>
+            <div class="value-desc">رحلة تعليمية مبنية على أسس تربوية، لا تفاعل عشوائي. كل درس يبني على السابق.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section" id="pricing">
+    <div class="section-inner">
+      <div class="section-head" style="text-align:center;">
+        <span class="section-tag">الأسعار</span>
+        <h2 class="section-title">بسيط وشفاف</h2>
+        <p class="section-sub" style="margin: 0 auto;">اشتراك شهري لطفل واحد، بدون رسوم خفية</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-country">🇸🇦 السعودية / 🇦🇪 الإمارات</div>
+          <div class="price-amount">٧٩</div>
+          <div class="price-currency">ريال / درهم شهرياً</div>
+          <ul class="price-features">
+            <li>جميع الدروس والمسارات</li>
+            <li>لوحة تحكم الوالدين</li>
+            <li>شارات وتحديات</li>
+            <li>دعم عبر واتساب</li>
+          </ul>
+          <button class="price-btn" onclick="showScreen('register')">ابدأ مجاناً</button>
+        </div>
+        <div class="price-card featured">
+          <div class="price-badge">الأكثر طلباً ✦</div>
+          <div class="price-country">🇶🇦 قطر / 🇰🇼 الكويت</div>
+          <div class="price-amount">٧٩</div>
+          <div class="price-currency">ريال / دينار شهرياً</div>
+          <ul class="price-features">
+            <li>جميع الدروس والمسارات</li>
+            <li>لوحة تحكم الوالدين</li>
+            <li>شارات وتحديات</li>
+            <li>دعم عبر واتساب</li>
+          </ul>
+          <button class="price-btn" onclick="showScreen('register')">ابدأ مجاناً</button>
+        </div>
+        <div class="price-card">
+          <div class="price-country">🇹🇳 تونس والمغرب العربي</div>
+          <div class="price-amount">٥٩</div>
+          <div class="price-currency">دينار تونسي شهرياً</div>
+          <ul class="price-features">
+            <li>جميع الدروس والمسارات</li>
+            <li>لوحة تحكم الوالدين</li>
+            <li>شارات وتحديات</li>
+            <li>دعم عبر واتساب</li>
+          </ul>
+          <button class="price-btn" onclick="showScreen('register')">ابدأ مجاناً</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" id="testimonials" style="background: var(--surface-2);">
+    <div class="section-inner">
+      <div class="section-head">
+        <span class="section-tag">آراء الأسر</span>
+        <h2 class="section-title">ماذا يقول آباء فِكر</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial">
+          <div class="t-stars">★★★★★</div>
+          <div class="t-text">أخيراً منصة تتكلم لغة ابني. كان يرفض أي محتوى إنجليزي، والآن لا يتوقف عن البرمجة!</div>
+          <div class="t-author">
+            <div class="t-avatar">👨</div>
+            <div><div class="t-name">أبو يوسف</div><div class="t-role">الرياض — ولي أمر طالب ١٢ سنة</div></div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="t-stars">★★★★★</div>
+          <div class="t-text">ما يميز فِكر هو القيم. ابنتي تتعلم وأنا مرتاحة على المحتوى الذي تشاهده.</div>
+          <div class="t-author">
+            <div class="t-avatar">👩</div>
+            <div><div class="t-name">أم نور</div><div class="t-role">دبي — ولية أمر طالبة ١٠ سنوات</div></div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="t-stars">★★★★★</div>
+          <div class="t-text">لوحة تحكم الوالدين ممتازة. أرى تقدم ولدي بالتفصيل، وهذا يحفزه أكثر.</div>
+          <div class="t-author">
+            <div class="t-avatar">👨</div>
+            <div><div class="t-name">أبو حمزة</div><div class="t-role">الكويت — ولي أمر طالب ١٤ سنة</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <div class="cta-banner">
+    <div style="position:relative;z-index:1;">
+      <h2 class="section-title">ابدأ رحلة طفلك اليوم</h2>
+      <p class="section-sub">الدرسان الأولان مجانيان تماماً، بدون بطاقة ائتمان</p>
+      <div class="cta-btns">
+        <button class="btn-white" onclick="showScreen('register')">سجّل الآن مجاناً</button>
+        <button class="btn-outline-white" onclick="showScreen('login')">لدي حساب بالفعل</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">فِ<span>كر</span></div>
+          <p class="footer-desc">منصة البرمجة العربية الأولى للأطفال. نبني جيلاً مبدعاً يقود التكنولوجيا بلغته وهويته.</p>
+        </div>
+        <div class="footer-col">
+          <h4>المنصة</h4>
+          <ul>
+            <li><a href="#courses">المسارات</a></li>
+            <li><a href="#pricing">الأسعار</a></li>
+            <li><a href="#values">قيمنا</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>الحساب</h4>
+          <ul>
+            <li><a href="#" onclick="showScreen('register')">إنشاء حساب</a></li>
+            <li><a href="#" onclick="showScreen('login')">تسجيل الدخول</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© ٢٠٢٦ فِكر — جميع الحقوق محفوظة</span>
+        <span>صُنع بـ ❤️ لأبنائنا العرب</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ══════════════ REGISTER ══════════════ -->
+<div id="screen-register" class="auth-screen">
+  <div class="auth-split">
+    <div class="auth-panel-left">
+      <div class="auth-panel-brand">فِ<span>كر</span></div>
+      <div class="auth-panel-text">
+        <div class="auth-panel-title">انضم إلى مجتمع<br/>المبرمجين الصغار</div>
+        <div class="auth-panel-sub">أنشئ حسابك كولي أمر وابدأ رحلة أبنائك في البرمجة العربية</div>
+      </div>
+      <div class="auth-panel-features">
+        <div class="auth-feat"><div class="auth-feat-icon">🆓</div>أول درسين مجانيان</div>
+        <div class="auth-feat"><div class="auth-feat-icon">🌙</div>محتوى يتوافق مع قيمنا</div>
+        <div class="auth-feat"><div class="auth-feat-icon">📊</div>تابع تقدم أبنائك</div>
+        <div class="auth-feat"><div class="auth-feat-icon">🏅</div>نظام شارات تحفيزي</div>
+      </div>
+
+    </div>
+    <div class="auth-panel-right">
+      <button class="auth-back" onclick="showScreen('landing')">← العودة للرئيسية</button>
+      <div class="auth-form-title">إنشاء حساب جديد</div>
+      <div class="auth-form-sub">سجّل كولي أمر، ثم أضف أبناءك</div>
+      <div id="register-error" class="form-error"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">الاسم الكامل</label>
+          <input id="reg-name" class="form-input" type="text" placeholder="محمد العبدالله" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">رقم الجوال</label>
+          <input id="reg-phone" class="form-input" type="tel" placeholder="+966 5XX XXX XXX" dir="ltr" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">البريد الإلكتروني</label>
+        <input id="reg-email" class="form-input" type="email" placeholder="example@email.com" dir="ltr" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">البلد</label>
+        <select id="reg-country" class="form-input">
+          <option value="SA">🇸🇦 المملكة العربية السعودية</option>
+          <option value="AE">🇦🇪 الإمارات</option>
+          <option value="QA">🇶🇦 قطر</option>
+          <option value="KW">🇰🇼 الكويت</option>
+          <option value="TN" selected>🇹🇳 تونس</option>
+          <option value="MA">🇲🇦 المغرب</option>
+          <option value="EG">🇪🇬 مصر</option>
+          <option value="OTHER">🌍 دولة أخرى</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">كلمة المرور</label>
+        <input id="reg-password" class="form-input" type="password" placeholder="٨ أحرف على الأقل" dir="ltr" />
+      </div>
+      <button class="btn-submit" id="btn-register" onclick="handleRegister()">إنشاء الحساب</button>
+      <div class="auth-switch">لديك حساب بالفعل؟ <a onclick="showScreen('login')">سجّل الدخول</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="screen-login" class="auth-screen">
+  <div class="auth-split">
+    <div class="auth-panel-left">
+      <div class="auth-panel-brand">فِ<span>كر</span></div>
+      <div class="auth-panel-text">
+        <div class="auth-panel-title">مرحباً بعودتك<br/>إلى فِكر</div>
+        <div class="auth-panel-sub">سجّل دخولك لمتابعة رحلة أبنائك التعليمية</div>
+      </div>
+      <div class="auth-panel-features">
+        <div class="auth-feat"><div class="auth-feat-icon">📈</div>تابع تقدم أبنائك</div>
+        <div class="auth-feat"><div class="auth-feat-icon">🏅</div>الشارات والإنجازات</div>
+        <div class="auth-feat"><div class="auth-feat-icon">💬</div>تواصل مع المدرب</div>
+      </div>
+
+    </div>
+    <div class="auth-panel-right">
+      <button class="auth-back" onclick="showScreen('landing')">← العودة للرئيسية</button>
+      <div class="auth-form-title">تسجيل الدخول</div>
+      <div class="auth-form-sub">أهلاً بك في فِكر</div>
+      <div id="login-error" class="form-error"></div>
+      <div class="form-group">
+        <label class="form-label">البريد الإلكتروني</label>
+        <input id="login-email" class="form-input" type="email" placeholder="example@email.com" dir="ltr" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;justify-content:space-between;">
+          <span>كلمة المرور</span>
+          <span class="forgot-link" onclick="handleForgotPassword()">نسيت كلمة المرور؟</span>
+        </label>
+        <input id="login-password" class="form-input" type="password" placeholder="••••••••" dir="ltr" />
+      </div>
+      <button class="btn-submit" id="btn-login" onclick="handleLogin()">تسجيل الدخول</button>
+      <div class="auth-switch">ليس لديك حساب؟ <a onclick="showScreen('register')">أنشئ حساباً جديداً</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ DASHBOARD ══════════════ -->
+<style>
+  .whatsapp-banner {
+    display: flex; align-items: center; gap: 16px;
+    background: #25d366; border-radius: var(--r2);
+    padding: 20px 28px; margin-bottom: 16px;
+    transition: var(--transition); color: white; text-decoration: none;
+  }
+  .whatsapp-banner:hover { background: #1fbe5a; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,0.3); }
+  .wa-icon { font-size: 2rem; flex-shrink: 0; }
+  .wa-title { font-family: var(--font-ui); font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .wa-sub { font-size: 0.83rem; opacity: 0.85; }
+  .wa-arrow { font-size: 1.4rem; margin-right: auto; opacity: 0.7; }
+  .tier-section { margin-bottom: 32px; }
+  .tier-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 24px; border-radius: var(--r2) var(--r2) 0 0; margin-bottom: 2px;
+  }
+  .asghar-h    { background: var(--teal); color: white; }
+  .mutawassit-h { background: linear-gradient(135deg,#b7791f,#c8922a); color: white; }
+  .kabir-h     { background: linear-gradient(135deg,#6d28d9,#8b5cf6); color: white; }
+  .tier-h-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .tier-h-name { font-family: var(--font-ui); font-weight: 700; font-size: 1.05rem; }
+  .tier-h-age  { font-size: 0.8rem; opacity: 0.8; }
+  .tier-h-free { margin-right: auto; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 99px; font-family: var(--font-ui); font-size: 0.75rem; font-weight: 700; }
+  .tier-h-lock { margin-right: auto; opacity: 0.7; font-family: var(--font-ui); font-size: 0.8rem; }
+  .lessons-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 2px; }
+  .lesson-card {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--white); border: 1px solid var(--border);
+    padding: 18px 20px; cursor: pointer; transition: var(--transition);
+  }
+  .lesson-card.free:hover  { background: var(--teal-pale); border-color: var(--teal); }
+  .lesson-card.locked { opacity: 0.65; }
+  .lesson-card.locked:hover { opacity: 0.85; background: var(--surface-2); }
+  .lesson-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--teal-pale); color: var(--teal);
+    font-family: var(--font-ui); font-weight: 700; font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .lesson-card.locked .lesson-num { background: var(--surface-2); color: var(--text-soft); }
+  .lesson-title { font-family: var(--font-ui); font-weight: 700; font-size: 0.9rem; color: var(--ink); margin-bottom: 3px; }
+  .lesson-desc  { font-size: 0.78rem; color: var(--text-soft); }
+  .lesson-badge { margin-right: auto; font-size: 0.72rem; font-family: var(--font-ui); font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
+  .free-badge { background: var(--teal-pale); color: var(--teal); }
+  .lock-badge { background: var(--surface-2); color: var(--text-soft); }
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(13,15,20,0.6);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; backdrop-filter: blur(4px);
+  }
+  .modal-box {
+    background: var(--white); border-radius: var(--r2);
+    padding: 48px 40px; max-width: 420px; width: 100%;
+    text-align: center; box-shadow: var(--shadow-lg);
+  }
+  .modal-icon { font-size: 3rem; margin-bottom: 16px; }
+  .modal-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+  .modal-sub { font-size: 0.9rem; color: var(--text-soft); line-height: 1.8; margin-bottom: 28px; }
+  .modal-btn {
+    display: block; width: 100%;
+    font-family: var(--font-ui); font-weight: 700; font-size: 1rem;
+    color: white; background: #25d366; padding: 14px; border-radius: var(--r);
+    transition: var(--transition); margin-bottom: 12px; text-decoration: none;
+  }
+  .modal-btn:hover { background: #1fbe5a; }
+  .modal-close { font-family: var(--font-ui); font-size: 0.85rem; color: var(--text-soft); cursor: pointer; background: none; border: none; padding: 8px; }
+  .modal-close:hover { color: var(--text); }
+  .adm-btn.gold  { background: rgba(200,146,42,0.15); color: #e8b84b; border: 1px solid rgba(200,146,42,0.3); }
+  .adm-btn.gold:hover  { background: rgba(200,146,42,0.25); }
+  #adm-search::placeholder { color: rgba(255,255,255,0.3); }
+</style>
+
+<div id="screen-dashboard" class="dashboard-screen">
+  <nav class="dash-nav">
+    <div class="dash-nav-logo">فِ<span style="color:var(--gold)">كر</span></div>
+    <div class="dash-nav-right">
+      <span class="dash-user" id="dash-username">مرحباً</span>
+      <button class="btn-logout" onclick="handleLogout()">تسجيل الخروج</button>
+      <button onclick="openAdminPrompt()" title="Admin" style="background:none;border:none;cursor:pointer;color:var(--border);font-size:0.7rem;padding:4px 8px;opacity:0.3;transition:opacity 0.2s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.3'">⚙</button>
+    </div>
+  </nav>
+  <div class="dash-body">
+    <div class="dash-welcome" id="dash-welcome-name">مرحباً 👋</div>
+    <div class="dash-welcome-sub" style="margin-bottom:28px;">أهلاً بك في فِكر — اختر مسارك وابدأ رحلتك</div>
+
+    <!-- WhatsApp Banner -->
+    <a href="https://chat.whatsapp.com/CRbAZfLlzt21KLjkh4S5QF" target="_blank" class="whatsapp-banner">
+      <span class="wa-icon">💬</span>
+      <div>
+        <div class="wa-title">انضم لمجموعة فِكر على واتساب</div>
+        <div class="wa-sub">تواصل مع المدرب، احصل على المساعدة، وتابع آخر التحديثات</div>
+      </div>
+      <span class="wa-arrow">←</span>
+    </a>
+
+    <!-- Course Map -->
+    <div class="dash-section-title" style="margin-top:36px; margin-bottom:20px;">🗺️ خريطة المسارات</div>
+
+    <!-- Tier 1: Asghar -->
+    <div class="tier-section">
+      <div class="tier-header asghar-h">
+        <span class="tier-h-icon">🌱</span>
+        <div><div class="tier-h-name">الأصغر</div><div class="tier-h-age">٨ — ١١ سنة · Scratch</div></div>
+        <span class="tier-h-free">درسان مجانيان ✦</span>
+      </div>
+      <div class="lessons-grid">
+        <div class="lesson-card free" onclick="openLesson(1,'مرحباً بعالم البرمجة')">
+          <div class="lesson-num">١</div>
+          <div class="lesson-info"><div class="lesson-title">مرحباً بعالم البرمجة</div><div class="lesson-desc">مقدمة في التفكير المنطقي</div></div>
+          <span class="lesson-badge free-badge">مجاني</span>
+        </div>
+        <div class="lesson-card free" onclick="openLesson(2,'أول لعبة بـ Scratch')">
+          <div class="lesson-num">٢</div>
+          <div class="lesson-info"><div class="lesson-title">أول لعبة بـ Scratch</div><div class="lesson-desc">نبني لعبة بسيطة خطوة بخطوة</div></div>
+          <span class="lesson-badge free-badge">مجاني</span>
+        </div>
+        <div class="lesson-card locked" onclick="showUpgrade()">
+          <div class="lesson-num">٣</div>
+          <div class="lesson-info"><div class="lesson-title">الشروط والقرارات</div><div class="lesson-desc">if / else بأسلوب مرئي</div></div>
+          <span class="lesson-badge lock-badge">🔒</span>
+        </div>
+        <div class="lesson-card locked" onclick="showUpgrade()">
+          <div class="lesson-num">٤</div>
+          <div class="lesson-info"><div class="lesson-title">مشروع نهائي</div><div class="lesson-desc">بناء مشروع متكامل</div></div>
+          <span class="lesson-badge lock-badge">🔒</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier 2: Mutawassit -->
+    <div class="tier-section">
+      <div class="tier-header mutawassit-h">
+        <span class="tier-h-icon">⚡</span>
+        <div><div class="tier-h-name">المتوسط</div><div class="tier-h-age">١١ — ١٤ سنة · Python</div></div>
+        <span class="tier-h-lock">🔒 يتطلب اشتراكاً</span>
+      </div>
+      <div class="lessons-grid">
+        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">١</div><div class="lesson-info"><div class="lesson-title">Python بالعربية</div><div class="lesson-desc">أول خطوة في عالم الكود</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">٢</div><div class="lesson-info"><div class="lesson-title">المتغيرات والدوال</div><div class="lesson-desc">أساس كل برنامج</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">٣</div><div class="lesson-info"><div class="lesson-title">معالجة البيانات</div><div class="lesson-desc">قوائم وحلقات Python</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">٤</div><div class="lesson-info"><div class="lesson-title">مشاريع تطبيقية</div><div class="lesson-desc">برامج حقيقية بالعربية</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+      </div>
+    </div>
+
+    <!-- Tier 3: Kabir -->
+    <div class="tier-section">
+      <div class="tier-header kabir-h">
+        <span class="tier-h-icon">🚀</span>
+        <div><div class="tier-h-name">الكبير</div><div class="tier-h-age">١٤ — ١٦ سنة · Python + Web</div></div>
+        <span class="tier-h-lock">🔒 يتطلب اشتراكاً</span>
+      </div>
+      <div class="lessons-grid">
+        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">١</div><div class="lesson-info"><div class="lesson-title">Python متقدم</div><div class="lesson-desc">خوارزميات وهياكل بيانات</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">٢</div><div class="lesson-info"><div class="lesson-title">HTML / CSS</div><div class="lesson-desc">بناء صفحات ويب</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">٣</div><div class="lesson-info"><div class="lesson-title">JavaScript</div><div class="lesson-desc">حياة في الصفحات</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">٤</div><div class="lesson-info"><div class="lesson-title">مشروع التخرج</div><div class="lesson-desc">موقع متكامل من الصفر</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Upgrade Modal -->
+  <div id="upgrade-modal" class="modal-overlay" style="display:none;" onclick="closeUpgrade()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      
+      <div class="modal-title">هذا الدرس يتطلب اشتراكاً</div>
+      <div class="modal-sub">يوسف ينتظرك! تواصل معنا عبر واتساب لتفعيل اشتراكك والوصول لجميع الدروس</div>
+      <a href="https://chat.whatsapp.com/CRbAZfLlzt21KLjkh4S5QF" target="_blank" class="modal-btn">💬 تواصل عبر واتساب</a>
+      <button class="modal-close" onclick="closeUpgrade()">لاحقاً</button>
+    </div>
+  </div>
+
+  <!-- Lesson Modal -->
+  <div id="lesson-modal" class="modal-overlay" style="display:none;" onclick="closeLesson()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      
+      <div class="modal-title" id="lesson-modal-title">الدرس</div>
+      <div class="modal-sub">يوسف متحمس لبدء الدرس معك! تواصل مع المدرب عبر واتساب للحصول على الدرس الآن.</div>
+      <a href="https://chat.whatsapp.com/CRbAZfLlzt21KLjkh4S5QF" target="_blank" class="modal-btn">💬 احصل على الدرس الآن</a>
+      <button class="modal-close" onclick="closeLesson()">إغلاق</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    updateProfile,
+    onAuthStateChanged,
+    sendPasswordResetEmail
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, getDoc, getDocs,
+    collection, updateDoc, serverTimestamp, query, orderBy, addDoc, deleteDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ── FIREBASE CONFIG ──
+  const firebaseConfig = {
+    apiKey: "AIzaSyBeD4ng-pNWSLgkrNmK1Re8FYnmCNCMBU8",
+    authDomain: "fikr-app-fbdf7.firebaseapp.com",
+    projectId: "fikr-app-fbdf7",
+    storageBucket: "fikr-app-fbdf7.firebasestorage.app",
+    messagingSenderId: "378212535527",
+    appId: "1:378212535527:web:99331970433b4428dd2642"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ── ADMIN ──
+  const ADMIN_PWD_HASH = '89d7a70d58c3b9137a487398d63c698f9b1652d177557031d158466119924f29';
+  async function hashPwd(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // ── SCREEN ROUTER ──
+  window.showScreen = function(name) {
+    document.querySelectorAll('.screen, .auth-screen, .dashboard-screen, .admin-screen, .lesson-screen')
+      .forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('screen-' + name);
+    if (el) el.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // ── HELPERS ──
+  function setError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+  function clearError(id) {
+    const el = document.getElementById(id);
+    el.textContent = '';
+    el.classList.remove('visible');
+  }
+  function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    btn.disabled = loading;
+    btn.textContent = loading ? 'جاري التحميل...' : btn.dataset.label;
+  }
+  function friendlyError(code) {
+    const map = {
+      'auth/email-already-in-use':    'هذا البريد الإلكتروني مسجّل مسبقاً',
+      'auth/invalid-email':           'صيغة البريد الإلكتروني غير صحيحة',
+      'auth/weak-password':           'كلمة المرور ضعيفة جداً — استخدم ٨ أحرف على الأقل',
+      'auth/user-not-found':          'لا يوجد حساب بهذا البريد الإلكتروني',
+      'auth/wrong-password':          'كلمة المرور غير صحيحة',
+      'auth/invalid-credential':      'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+      'auth/too-many-requests':       'تم تجاوز عدد المحاولات، حاول لاحقاً',
+      'auth/network-request-failed':  'خطأ في الاتصال بالإنترنت',
+    };
+    return map[code] || 'حدث خطأ غير متوقع، حاول مجدداً';
+  }
+  function loadDashboard(user) {
+    const name = (user.displayName || user.email).split(' ')[0];
+    document.getElementById('dash-username').textContent     = `مرحباً، ${name}`;
+    document.getElementById('dash-welcome-name').textContent = `مرحباً، ${name} 👋`;
+  }
+
+  // ── AUTH STATE LISTENER (auto-login) ──
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      loadDashboard(user);
+      const active = document.querySelector('.auth-screen.active, #screen-landing.active');
+      if (active && active.id !== 'screen-dashboard') {
+        showScreen('dashboard');
+      }
+    }
+  });
+
+  // ── INIT BUTTON LABELS ──
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btn-register').dataset.label = 'إنشاء الحساب';
+    document.getElementById('btn-login').dataset.label    = 'تسجيل الدخول';
+  });
+
+  // ── REGISTER ──
+  window.handleRegister = async function() {
+    clearError('register-error');
+    const name     = document.getElementById('reg-name').value.trim();
+    const email    = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
+
+    if (!name || !email || !password) {
+      return setError('register-error', 'يرجى ملء جميع الحقول المطلوبة');
+    }
+    if (password.length < 8) {
+      return setError('register-error', 'كلمة المرور يجب أن تكون ٨ أحرف على الأقل');
+    }
+
+    setLoading('btn-register', true);
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, { displayName: name });
+      // Save user profile to Firestore
+      const phone   = document.getElementById('reg-phone').value.trim();
+      const country = document.getElementById('reg-country').value;
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        uid:           cred.user.uid,
+        fullName:      name,
+        email:         email,
+        phone:         phone,
+        country:       country,
+        subscription:  'trial',
+        whatsappJoined: false,
+        lessonsCompleted: [],
+        createdAt:     serverTimestamp(),
+      });
+      loadDashboard(cred.user);
+      showScreen('dashboard');
+    } catch (err) {
+      setError('register-error', friendlyError(err.code));
+    } finally {
+      setLoading('btn-register', false);
+    }
+  }
+
+  // ── LOGIN ──
+  window.handleLogin = async function() {
+    clearError('login-error');
+    const email    = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    if (!email || !password) {
+      return setError('login-error', 'يرجى إدخال البريد وكلمة المرور');
+    }
+
+    setLoading('btn-login', true);
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      loadDashboard(cred.user);
+      showScreen('dashboard');
+    } catch (err) {
+      setError('login-error', friendlyError(err.code));
+    } finally {
+      setLoading('btn-login', false);
+    }
+  }
+
+  // ── FORGOT PASSWORD ──
+  window.handleForgotPassword = async function() {
+    const email = document.getElementById('login-email').value.trim();
+    if (!email) {
+      return setError('login-error', 'أدخل بريدك الإلكتروني أولاً ثم اضغط "نسيت كلمة المرور"');
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert('✅ تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني');
+    } catch (err) {
+      setError('login-error', friendlyError(err.code));
+    }
+  }
+
+  // ── LOGOUT ──
+  window.handleLogout = async function() {
+    await signOut(auth);
+    showScreen('landing');
+  }
+
+  // ── MODALS ──
+  window.showUpgrade = function() {
+    document.getElementById('upgrade-modal').style.display = 'flex';
+  }
+  window.closeUpgrade = function() {
+    document.getElementById('upgrade-modal').style.display = 'none';
+  }
+  window.openLesson = function(num, title) {
+    document.getElementById('lesson-modal-title').textContent = 'الدرس ' + num + ': ' + title;
+    document.getElementById('lesson-modal').style.display = 'flex';
+  }
+  window.closeLesson = function() {
+    document.getElementById('lesson-modal').style.display = 'none';
+  }
+
+  // ── ADMIN PASSWORD PROMPT ──
+  window.openAdminPrompt = async function() {
+    const pwd = prompt('🔐 كلمة مرور الإدارة:');
+    if (!pwd) return;
+    const hash = await hashPwd(pwd);
+    if (hash !== ADMIN_PWD_HASH) {
+      alert('❌ كلمة المرور غير صحيحة');
+      return;
+    }
+    await loadAdmin();
+    showScreen('admin');
+  }
+
+  // ── ADMIN FUNCTIONS ──
+  // Store all users globally for search/filter/export
+  let _allUsers = [];
+
+  function formatDate(ts) {
+    if (!ts?.toDate) return '—';
+    const d = ts.toDate();
+    return d.toLocaleDateString('ar-TN', { year:'numeric', month:'short', day:'numeric' });
+  }
+  function expiryStatus(u) {
+    if (u.subscription !== 'active') return { label: '—', color: '#6b7280' };
+    if (!u.expiresAt?.toDate) return { label: 'غير محدد', color: '#6b7280' };
+    const exp = u.expiresAt.toDate();
+    const now = new Date();
+    const days = Math.ceil((exp - now) / (1000*60*60*24));
+    if (days < 0)  return { label: 'منتهي', color: '#dc2626' };
+    if (days <= 7) return { label: `${days} أيام`, color: '#f59e0b' };
+    return { label: formatDate(u.expiresAt), color: '#16a34a' };
+  }
+
+  function renderTable(users) {
+    const tbody = document.getElementById('adm-tbody');
+    tbody.innerHTML = '';
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="9" class="adm-empty">لا توجد نتائج</td></tr>';
+      return;
+    }
+    users.forEach(u => {
+      const regDate  = formatDate(u.createdAt);
+      const expiry   = expiryStatus(u);
+      const subColor = u.subscription === 'active' ? '#16a34a' : u.subscription === 'trial' ? '#d97706' : '#dc2626';
+      const waIcon   = u.whatsappJoined ? '✅' : '❌';
+      const lessons  = u.lessonsCompleted?.length || 0;
+      const phone    = u.phone ? u.phone.replace(/\s/g,'') : '';
+      const waLink   = phone ? `https://wa.me/${phone.replace('+','')}` : '#';
+      tbody.innerHTML += `
+        <tr data-uid="${u.id}">
+          <td><strong style="color:#fff">${u.fullName || '—'}</strong><br/><small style="color:#888">${u.email}</small></td>
+          <td>${u.country || '—'}</td>
+          <td>
+            ${u.phone ? `<a href="${waLink}" target="_blank" class="adm-btn blue" style="text-decoration:none;display:inline-block">💬 ${u.phone}</a>` : '—'}
+          </td>
+          <td>
+            <span class="sub-badge" style="background:${subColor}20;color:${subColor};border:1px solid ${subColor}40">${u.subscription || 'trial'}</span>
+          </td>
+          <td style="color:${expiry.color};font-size:0.8rem;white-space:nowrap">${expiry.label}</td>
+          <td style="text-align:center">${waIcon}</td>
+          <td style="text-align:center;color:rgba(255,255,255,0.6)">${lessons}</td>
+          <td style="color:rgba(255,255,255,0.5);font-size:0.8rem;white-space:nowrap">${regDate}</td>
+          <td>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button class="adm-btn green" onclick="toggleSub('${u.id}','${u.subscription}')">
+                ${u.subscription === 'active' ? '⏸ إيقاف' : '✅ تفعيل'}
+              </button>
+              <button class="adm-btn blue" onclick="toggleWa('${u.id}',${u.whatsappJoined})">
+                ${u.whatsappJoined ? '❌ واتساب' : '✅ واتساب'}
+              </button>
+              <button class="adm-btn gold" onclick="setExpiry('${u.id}')">📅 انتهاء</button>
+            </div>
+          </td>
+        </tr>`;
+    });
+  }
+
+  window.loadAdmin = async function() {
+    try {
+      const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      _allUsers = [];
+      snap.forEach(d => _allUsers.push({ id: d.id, ...d.data() }));
+
+      // Stats
+      document.getElementById('adm-total').textContent   = _allUsers.length;
+      document.getElementById('adm-active').textContent  = _allUsers.filter(u => u.subscription === 'active').length;
+      document.getElementById('adm-trial').textContent   = _allUsers.filter(u => u.subscription === 'trial').length;
+      document.getElementById('adm-wa').textContent      = _allUsers.filter(u => u.whatsappJoined).length;
+      document.getElementById('adm-lessons').textContent = _allUsers.reduce((s,u) => s+(u.lessonsCompleted?.length||0),0);
+
+      renderTable(_allUsers);
+    } catch(e) {
+      console.error('Admin load error:', e);
+      document.getElementById('adm-tbody').innerHTML = '<tr><td colspan="9" class="adm-empty" style="color:#f87171">خطأ في تحميل البيانات — تأكد من قواعد Firestore</td></tr>';
+    }
+  }
+
+  window.searchUsers = function() {
+    const q = document.getElementById('adm-search').value.trim().toLowerCase();
+    if (!q) return renderTable(_allUsers);
+    renderTable(_allUsers.filter(u =>
+      (u.fullName||'').toLowerCase().includes(q) ||
+      (u.email||'').toLowerCase().includes(q) ||
+      (u.phone||'').includes(q)
+    ));
+  }
+
+  window.toggleSub = async function(uid, current) {
+    const newStatus = current === 'active' ? 'trial' : 'active';
+    const update = { subscription: newStatus };
+    if (newStatus === 'active') {
+      const exp = new Date(); exp.setDate(exp.getDate() + 30);
+      update.expiresAt = exp;
+    }
+    await updateDoc(doc(db, 'users', uid), update);
+    await loadAdmin();
+  }
+
+  window.toggleWa = async function(uid, current) {
+    await updateDoc(doc(db, 'users', uid), { whatsappJoined: !current });
+    await loadAdmin();
+  }
+
+  window.setExpiry = async function(uid) {
+    const val = prompt('تاريخ انتهاء الاشتراك (YYYY-MM-DD):');
+    if (!val) return;
+    const d = new Date(val);
+    if (isNaN(d)) return alert('تاريخ غير صحيح');
+    await updateDoc(doc(db, 'users', uid), { expiresAt: d });
+    await loadAdmin();
+  }
+
+  window.refreshAdmin = async function() {
+    const btn = document.getElementById('adm-refresh');
+    btn.textContent = 'جاري التحديث...';
+    await loadAdmin();
+    btn.textContent = '🔄 تحديث';
+  }
+
+  window.exportCSV = function() {
+    if (!_allUsers.length) return alert('لا توجد بيانات');
+    const headers = ['الاسم','البريد','البلد','الجوال','الاشتراك','واتساب','الدروس','تاريخ التسجيل'];
+    const rows = _allUsers.map(u => [
+      u.fullName||'', u.email||'', u.country||'', u.phone||'',
+      u.subscription||'', u.whatsappJoined?'نعم':'لا',
+      u.lessonsCompleted?.length||0,
+      formatDate(u.createdAt)
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `fikr-users-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  // ══ ADMIN TAB SWITCHING ══
+  window.switchAdmTab = function(tab) {
+    document.getElementById('adm-tab-users').style.display   = tab === 'users'   ? 'block' : 'none';
+    document.getElementById('adm-tab-lessons').style.display = tab === 'lessons' ? 'block' : 'none';
+    document.getElementById('tab-users-btn').classList.toggle('active',   tab === 'users');
+    document.getElementById('tab-lessons-btn').classList.toggle('active', tab === 'lessons');
+    if (tab === 'lessons') loadLessons();
+  }
+
+  // ══ LESSONS MANAGER ══
+  let _allLessons = [];
+
+  window.saveLesson = async function() {
+    const title     = document.getElementById('ls-title').value.trim();
+    const tier      = document.getElementById('ls-tier').value;
+    const order     = parseInt(document.getElementById('ls-order').value) || 1;
+    const isFree    = document.getElementById('ls-free').value === 'true';
+    const videoUrl  = document.getElementById('ls-video').value.trim();
+    const desc      = document.getElementById('ls-desc').value.trim();
+    const challenge = document.getElementById('ls-challenge').value.trim();
+    const msg       = document.getElementById('ls-msg');
+
+    if (!title || !videoUrl) {
+      msg.style.color = '#f87171'; msg.textContent = '⚠️ العنوان ورابط الفيديو مطلوبان'; msg.style.display = 'block';
+      return;
+    }
+    try {
+      await addDoc(collection(db, 'lessons'), {
+        title, tier, lessonOrder: order, isFree,
+        videoUrl, description: desc, challenge,
+        createdAt: serverTimestamp()
+      });
+      msg.style.color = '#4ade80'; msg.textContent = '✅ تم حفظ الدرس بنجاح!'; msg.style.display = 'block';
+      // Clear form
+      ['ls-title','ls-video','ls-desc','ls-challenge'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('ls-order').value = '';
+      setTimeout(() => { msg.style.display = 'none'; }, 3000);
+      loadLessons();
+    } catch(e) {
+      msg.style.color = '#f87171'; msg.textContent = '❌ خطأ: ' + e.message; msg.style.display = 'block';
+    }
+  }
+
+  window.loadLessons = async function() {
+    const tbody = document.getElementById('ls-tbody');
+    tbody.innerHTML = '<tr><td colspan="6" class="adm-empty">جاري التحميل...</td></tr>';
+    try {
+      const q = query(collection(db, 'lessons'), orderBy('lessonOrder', 'asc'));
+      const snap = await getDocs(q);
+      _allLessons = [];
+      snap.forEach(d => _allLessons.push({ id: d.id, ...d.data() }));
+      renderLessonsTable(_allLessons);
+    } catch(e) {
+      tbody.innerHTML = `<tr><td colspan="6" class="adm-empty" style="color:#f87171">خطأ: ${e.message}</td></tr>`;
+    }
+  }
+
+  function renderLessonsTable(lessons) {
+    const tbody = document.getElementById('ls-tbody');
+    if (!lessons.length) { tbody.innerHTML = '<tr><td colspan="6" class="adm-empty">لا توجد دروس بعد — أضف أول درس!</td></tr>'; return; }
+    const tierNames = { asghar: '🌱 الأصغر', mutawassit: '⚡ المتوسط', kabir: '🚀 الكبير' };
+    tbody.innerHTML = '';
+    lessons.forEach(l => {
+      const hasVideo = l.videoUrl ? '✅' : '❌';
+      tbody.innerHTML += `
+        <tr>
+          <td style="color:rgba(255,255,255,0.4)">${l.lessonOrder}</td>
+          <td><strong style="color:#fff">${l.title}</strong><br/><small style="color:#888;font-size:0.75rem">${l.description?.slice(0,60) || ''}...</small></td>
+          <td>${tierNames[l.tier] || l.tier}</td>
+          <td style="text-align:center">${hasVideo}</td>
+          <td style="text-align:center">${l.isFree ? '<span style="color:#4ade80;font-size:0.8rem">مجاني</span>' : '<span style="color:#fbbf24;font-size:0.8rem">مدفوع</span>'}</td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <button class="adm-btn green" onclick="editLesson('${l.id}')">✏️ تعديل</button>
+              <button class="adm-btn" style="background:rgba(220,38,38,0.15);color:#f87171;border:1px solid rgba(220,38,38,0.3)" onclick="deleteLesson('${l.id}','${l.title}')">🗑️</button>
+            </div>
+          </td>
+        </tr>`;
+    });
+  }
+
+  window.filterLessons = function() {
+    const val = document.getElementById('ls-filter').value;
+    renderLessonsTable(val === 'all' ? _allLessons : _allLessons.filter(l => l.tier === val));
+  }
+
+  window.deleteLesson = async function(id, title) {
+    if (!confirm(`حذف درس "${title}"؟`)) return;
+    await deleteDoc(doc(db, 'lessons', id));
+    loadLessons();
+  }
+
+  window.editLesson = function(id) {
+    const l = _allLessons.find(x => x.id === id);
+    if (!l) return;
+    document.getElementById('ls-title').value     = l.title || '';
+    document.getElementById('ls-tier').value      = l.tier || 'asghar';
+    document.getElementById('ls-order').value     = l.lessonOrder || 1;
+    document.getElementById('ls-free').value      = l.isFree ? 'true' : 'false';
+    document.getElementById('ls-video').value     = l.videoUrl || '';
+    document.getElementById('ls-desc').value      = l.description || '';
+    document.getElementById('ls-challenge').value = l.challenge || '';
+    // Delete old and save as new on submit
+    deleteDoc(doc(db, 'lessons', id));
+    document.getElementById('ls-msg').textContent = '✏️ جاري التعديل — اضغط حفظ عند الانتهاء';
+    document.getElementById('ls-msg').style.color = '#fbbf24';
+    document.getElementById('ls-msg').style.display = 'block';
+  }
+
+  // ══ STUDENT LESSON VIEWER ══
+  window.openLesson = async function(lessonId, title) {
+    // Open standalone lesson file
+    if (lessonId === 1) { window.location.href = 'lesson1.html'; return; }
+    if (lessonId === 2) { window.location.href = 'lesson2.html'; return; }
+    // Fallback modal for locked lessons
+    document.getElementById('lesson-modal-title').textContent = 'الدرس ' + lessonId + ': ' + title;
+    document.getElementById('lesson-modal').style.display = 'flex';
+  }
+
+  function showLessonViewer(lesson) {
+    document.getElementById('lv-title').textContent       = lesson.title;
+    document.getElementById('lv-desc').textContent        = lesson.description || '';
+    document.getElementById('lv-tier').textContent        = lesson.tier === 'asghar' ? '🌱 الأصغر' : lesson.tier === 'mutawassit' ? '⚡ المتوسط' : '🚀 الكبير';
+    document.getElementById('lv-order').textContent       = 'الدرس ' + lesson.lessonOrder;
+    const videoWrap = document.getElementById('lv-video-wrap');
+    if (lesson.videoUrl) {
+      // Convert normal YouTube URL to embed if needed
+      let embedUrl = lesson.videoUrl;
+      if (embedUrl.includes('watch?v=')) embedUrl = embedUrl.replace('watch?v=', 'embed/');
+      if (embedUrl.includes('youtu.be/')) embedUrl = 'https://www.youtube.com/embed/' + embedUrl.split('youtu.be/')[1];
+      videoWrap.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen
+        style="width:100%;aspect-ratio:16/9;border-radius:12px"></iframe>`;
+    } else {
+      videoWrap.innerHTML = '<div style="padding:40px;text-align:center;color:rgba(255,255,255,0.4);font-family:var(--font-ui)">الفيديو قيد الإعداد</div>';
+    }
+    const challengeWrap = document.getElementById('lv-challenge-wrap');
+    if (lesson.challenge) {
+      challengeWrap.style.display = 'block';
+      document.getElementById('lv-challenge').textContent = lesson.challenge;
+    } else {
+      challengeWrap.style.display = 'none';
+    }
+    showScreen('lesson-viewer');
+  }
+
+  // ── MARK LESSON COMPLETE ──
+  window.markComplete = async function() {
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      const snap = await getDoc(userRef);
+      const data = snap.data() || {};
+      const completed = data.lessonsCompleted || [];
+      const lessonTitle = document.getElementById('lv-title').textContent;
+      if (!completed.includes(lessonTitle)) completed.push(lessonTitle);
+      await updateDoc(userRef, { lessonsCompleted: completed });
+      alert('🎉 أحسنت! حصلت على ١٠٠ XP');
+      showScreen('dashboard');
+    } catch(e) { alert('خطأ: ' + e.message); }
+  }
+
+  // ── ENTER KEY ──
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const active = document.querySelector('.auth-screen.active');
+    if (!active) return;
+    if (active.id === 'screen-register') window.handleRegister();
+    if (active.id === 'screen-login')    window.handleLogin();
+  });
+</script>
+
+<!-- ══════════════ ADMIN PANEL ══════════════ -->
+<style>
+  .admin-screen { min-height: 100vh; background: var(--ink); display: none; }
+  .admin-screen.active { display: block; }
+  .adm-nav {
+    background: var(--ink-soft); border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .adm-nav-logo { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--white); }
+  .adm-nav-logo span { color: var(--gold); }
+  .adm-badge { background: var(--gold); color: var(--ink); font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+  .adm-nav-right { display: flex; align-items: center; gap: 12px; }
+  .adm-nav-btn {
+    font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600;
+    padding: 8px 16px; border-radius: var(--r); border: none; cursor: pointer; transition: var(--transition);
+  }
+  .adm-nav-btn.outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); }
+  .adm-nav-btn.outline:hover { border-color: var(--white); color: var(--white); }
+  .adm-nav-btn.primary { background: var(--teal); color: var(--white); }
+  .adm-nav-btn.primary:hover { background: var(--teal-light); }
+
+  .adm-body { max-width: 1300px; margin: 0 auto; padding: 40px; }
+  .adm-title { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .adm-sub { color: rgba(255,255,255,0.4); font-size: 0.88rem; margin-bottom: 32px; }
+
+  /* Stats row */
+  .adm-stats { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 32px; }
+  .adm-stat {
+    background: var(--ink-soft); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r2); padding: 20px; text-align: center;
+    transition: var(--transition);
+  }
+  .adm-stat:hover { border-color: rgba(255,255,255,0.2); }
+  .adm-stat-val { font-family: var(--font-ui); font-size: 2rem; font-weight: 900; color: var(--gold); display: block; }
+  .adm-stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); font-family: var(--font-ui); margin-top: 4px; }
+
+  /* Table */
+  .adm-table-wrap {
+    background: var(--ink-soft); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r2); overflow: hidden;
+  }
+  .adm-table-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .adm-table-title { font-family: var(--font-ui); font-weight: 700; color: var(--white); font-size: 0.95rem; }
+  .adm-table { width: 100%; border-collapse: collapse; }
+  .adm-table th {
+    font-family: var(--font-ui); font-size: 0.75rem; font-weight: 700;
+    color: rgba(255,255,255,0.4); text-align: right; padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .adm-table td {
+    padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.75); font-family: var(--font-ui); font-size: 0.85rem;
+    vertical-align: middle;
+  }
+  .adm-table tr:hover td { background: rgba(255,255,255,0.03); }
+  .adm-table tr:last-child td { border-bottom: none; }
+  .sub-badge {
+    display: inline-block; font-family: var(--font-ui); font-size: 0.72rem;
+    font-weight: 700; padding: 3px 10px; border-radius: 99px;
+  }
+  .adm-btn {
+    font-family: var(--font-ui); font-size: 0.75rem; font-weight: 700;
+    padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer;
+    transition: var(--transition); white-space: nowrap;
+  }
+  .adm-btn.green { background: rgba(22,163,74,0.15); color: #4ade80; border: 1px solid rgba(22,163,74,0.3); }
+  .adm-btn.green:hover { background: rgba(22,163,74,0.25); }
+  .adm-btn.blue  { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+  .adm-btn.blue:hover  { background: rgba(59,130,246,0.25); }
+  .adm-empty { padding: 48px; text-align: center; color: rgba(255,255,255,0.3); font-family: var(--font-ui); }
+
+  .adm-tab-btn {
+    font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600;
+    padding: 8px 18px; border-radius: var(--r); border: 1.5px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.5); background: transparent; cursor: pointer; transition: var(--transition);
+  }
+  .adm-tab-btn.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .adm-tab-btn:hover:not(.active) { border-color: rgba(255,255,255,0.4); color: rgba(255,255,255,0.8); }
+  .adm-form-label { display: block; font-family: var(--font-ui); font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.5); margin-bottom: 6px; letter-spacing: 0.3px; }
+  .adm-form-input {
+    width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: #fff; padding: 10px 14px; border-radius: 8px; font-family: var(--font-ui);
+    font-size: 0.88rem; outline: none; transition: var(--transition); direction: rtl;
+  }
+  .adm-form-input:focus { border-color: var(--teal); background: rgba(255,255,255,0.09); }
+  .adm-form-input option { background: #1a1d26; color: #fff; }
+  textarea.adm-form-input { resize: vertical; }
+
+  @media (max-width:900px) {
+    .adm-stats { grid-template-columns: repeat(2,1fr); }
+    .adm-body { padding: 20px; }
+    .adm-nav { padding: 14px 20px; }
+    .adm-table-wrap { overflow-x: auto; }
+  }
+</style>
+
+<div id="screen-admin" class="admin-screen">
+  <nav class="adm-nav">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="adm-nav-logo">فِ<span>كر</span></div>
+      <span class="adm-badge">ADMIN</span>
+    </div>
+    <div class="adm-nav-right">
+      <button class="adm-tab-btn active" id="tab-users-btn" onclick="switchAdmTab('users')">👥 المستخدمون</button>
+      <button class="adm-tab-btn" id="tab-lessons-btn" onclick="switchAdmTab('lessons')">📚 الدروس</button>
+      <button id="adm-refresh" class="adm-nav-btn primary" onclick="refreshAdmin()">🔄 تحديث</button>
+      <button class="adm-nav-btn outline" onclick="handleLogout()">تسجيل الخروج</button>
+    </div>
+  </nav>
+
+  <div class="adm-body">
+    <div class="adm-title">لوحة تحكم المدير</div>
+    <div class="adm-sub">إدارة المستخدمين والاشتراكات</div>
+
+    <!-- Stats -->
+    <div class="adm-stats">
+      <div class="adm-stat"><span class="adm-stat-val" id="adm-total">—</span><div class="adm-stat-label">إجمالي المستخدمين</div></div>
+      <div class="adm-stat"><span class="adm-stat-val" id="adm-active" style="color:#4ade80">—</span><div class="adm-stat-label">اشتراكات نشطة</div></div>
+      <div class="adm-stat"><span class="adm-stat-val" id="adm-trial" style="color:#fbbf24">—</span><div class="adm-stat-label">تجريبي</div></div>
+      <div class="adm-stat"><span class="adm-stat-val" id="adm-wa" style="color:#34d399">—</span><div class="adm-stat-label">انضموا للواتساب</div></div>
+      <div class="adm-stat"><span class="adm-stat-val" id="adm-lessons" style="color:#a78bfa">—</span><div class="adm-stat-label">دروس مكتملة</div></div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div id="adm-tab-users">
+    <!-- Users Table -->
+    <div class="adm-table-wrap">
+      <div class="adm-table-header">
+        <span class="adm-table-title">👥 جميع المستخدمين</span>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <input id="adm-search" type="text" placeholder="🔍 بحث بالاسم أو البريد أو الجوال..."
+            oninput="searchUsers()"
+            style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);
+                   color:#fff;padding:8px 14px;border-radius:8px;font-family:var(--font-ui);
+                   font-size:0.82rem;outline:none;min-width:240px;direction:rtl"/>
+          <button onclick="exportCSV()" class="adm-nav-btn" style="background:rgba(200,146,42,0.2);color:#e8b84b;border:1px solid rgba(200,146,42,0.3);font-size:0.82rem;padding:8px 14px">
+            📥 تصدير CSV
+          </button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="adm-table">
+          <thead>
+            <tr>
+              <th>المستخدم</th>
+              <th>البلد</th>
+              <th>الجوال / واتساب</th>
+              <th>الاشتراك</th>
+              <th>انتهاء</th>
+              <th>واتساب</th>
+              <th>الدروس</th>
+              <th>تاريخ التسجيل</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="adm-tbody">
+            <tr><td colspan="9" class="adm-empty">جاري تحميل البيانات...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div> <!-- end adm-tab-users -->
+
+    <!-- LESSONS TAB -->
+    <div id="adm-tab-lessons" style="display:none">
+
+      <!-- Add Lesson Form -->
+      <div class="adm-table-wrap" style="margin-bottom:20px">
+        <div class="adm-table-header">
+          <span class="adm-table-title">➕ إضافة درس جديد</span>
+        </div>
+        <div style="padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <label class="adm-form-label">عنوان الدرس</label>
+            <input id="ls-title" class="adm-form-input" type="text" placeholder="مثال: مرحباً بعالم البرمجة" />
+          </div>
+          <div>
+            <label class="adm-form-label">المسار</label>
+            <select id="ls-tier" class="adm-form-input">
+              <option value="asghar">🌱 الأصغر (٨-١١)</option>
+              <option value="mutawassit">⚡ المتوسط (١١-١٤)</option>
+              <option value="kabir">🚀 الكبير (١٤-١٦)</option>
+            </select>
+          </div>
+          <div>
+            <label class="adm-form-label">رقم الدرس</label>
+            <input id="ls-order" class="adm-form-input" type="number" placeholder="١" min="1" />
+          </div>
+          <div>
+            <label class="adm-form-label">مجاني؟</label>
+            <select id="ls-free" class="adm-form-input">
+              <option value="true">✅ نعم — مجاني</option>
+              <option value="false">🔒 لا — يتطلب اشتراك</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1">
+            <label class="adm-form-label">رابط الفيديو (YouTube)</label>
+            <input id="ls-video" class="adm-form-input" type="url" placeholder="https://youtube.com/embed/..." dir="ltr"/>
+          </div>
+          <div style="grid-column:1/-1">
+            <label class="adm-form-label">وصف الدرس</label>
+            <textarea id="ls-desc" class="adm-form-input" rows="3" placeholder="ما الذي سيتعلمه الطفل في هذا الدرس..."></textarea>
+          </div>
+          <div style="grid-column:1/-1">
+            <label class="adm-form-label">تحدي الدرس (اختياري — HTML/Scratch embed)</label>
+            <textarea id="ls-challenge" class="adm-form-input" rows="3" placeholder="رابط Scratch أو تعليمات التحدي..."></textarea>
+          </div>
+          <div style="grid-column:1/-1">
+            <button onclick="saveLesson()" class="adm-nav-btn primary" style="width:100%;padding:14px;font-size:1rem">
+              💾 حفظ الدرس
+            </button>
+            <div id="ls-msg" style="text-align:center;margin-top:10px;font-family:var(--font-ui);font-size:0.85rem;color:#4ade80;display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lessons List -->
+      <div class="adm-table-wrap">
+        <div class="adm-table-header">
+          <span class="adm-table-title">📋 جميع الدروس</span>
+          <select id="ls-filter" class="adm-form-input" style="max-width:180px" onchange="filterLessons()">
+            <option value="all">كل المسارات</option>
+            <option value="asghar">🌱 الأصغر</option>
+            <option value="mutawassit">⚡ المتوسط</option>
+            <option value="kabir">🚀 الكبير</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>العنوان</th>
+                <th>المسار</th>
+                <th>الفيديو</th>
+                <th>مجاني</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="ls-tbody">
+              <tr><td colspan="6" class="adm-empty">لا توجد دروس بعد</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div> <!-- end adm-tab-lessons -->
+
+  </div>
+</div>
+
+
+<!-- ══════════════ LESSON VIEWER ══════════════ -->
+<style>
+  .lesson-screen { min-height:100vh; background:var(--ink); display:none; }
+  .lesson-screen.active { display:block; }
+  .lv-nav {
+    background:var(--ink-soft); border-bottom:1px solid rgba(255,255,255,0.08);
+    padding:14px 40px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .lv-logo { font-family:var(--font-display); font-size:1.6rem; font-weight:700; color:var(--white); }
+  .lv-logo span { color:var(--gold); }
+  .lv-body { max-width:900px; margin:0 auto; padding:40px; }
+  .lv-meta { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .lv-tag { font-family:var(--font-ui); font-size:0.78rem; font-weight:700; padding:4px 12px; border-radius:99px; }
+  .lv-tag.tier { background:rgba(26,107,114,0.3); color:#5eead4; }
+  .lv-tag.num  { background:rgba(200,146,42,0.2); color:#e8b84b; }
+  .lv-title { font-family:var(--font-display); font-size:2rem; font-weight:700; color:var(--white); margin-bottom:12px; }
+  .lv-desc  { font-size:0.95rem; color:rgba(255,255,255,0.55); line-height:1.8; margin-bottom:28px; }
+  .lv-section-title { font-family:var(--font-ui); font-size:0.78rem; font-weight:700; color:rgba(255,255,255,0.35); letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }
+  .lv-video-box { background:var(--ink-soft); border-radius:16px; overflow:hidden; margin-bottom:32px; border:1px solid rgba(255,255,255,0.08); }
+  .lv-challenge-box { background:rgba(26,107,114,0.12); border:1px solid rgba(26,107,114,0.3); border-radius:16px; padding:28px; margin-bottom:32px; }
+  .lv-challenge-text { font-family:var(--font-ui); font-size:0.95rem; color:rgba(255,255,255,0.7); line-height:1.8; white-space:pre-wrap; }
+  .lv-complete-btn {
+    width:100%; font-family:var(--font-ui); font-weight:700; font-size:1rem;
+    color:var(--white); background:var(--teal); padding:16px;
+    border-radius:var(--r); border:none; cursor:pointer; transition:var(--transition);
+    box-shadow:0 4px 16px rgba(26,107,114,0.4);
+  }
+  .lv-complete-btn:hover { background:var(--teal-light); transform:translateY(-2px); }
+  @media(max-width:900px) { .lv-body { padding:24px 16px; } .lv-nav { padding:14px 16px; } }
+</style>
+
+<div id="screen-lesson-viewer" class="lesson-screen">
+  <nav class="lv-nav">
+    <div class="lv-logo">فِ<span>كر</span></div>
+    <button class="adm-nav-btn outline" onclick="showScreen('dashboard')" style="font-family:var(--font-ui);font-size:0.85rem;font-weight:600;padding:8px 16px;border-radius:var(--r);border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);background:transparent;cursor:pointer">
+      ← العودة
+    </button>
+  </nav>
+  <div class="lv-body">
+    <div class="lv-meta">
+      <span class="lv-tag tier" id="lv-tier">🌱 الأصغر</span>
+      <span class="lv-tag num"  id="lv-order">الدرس ١</span>
+    </div>
+    <div class="lv-title" id="lv-title">عنوان الدرس</div>
+    <div class="lv-desc"  id="lv-desc">وصف الدرس</div>
+
+    <!-- Video -->
+    <div class="lv-section-title">🎬 الفيديو التعليمي</div>
+    <div class="lv-video-box" id="lv-video-wrap">
+      <div style="padding:60px;text-align:center;color:rgba(255,255,255,0.3)">جاري تحميل الفيديو...</div>
+    </div>
+
+    <!-- Challenge -->
+    <div id="lv-challenge-wrap">
+      <div class="lv-section-title">⚡ تحدي الدرس</div>
+      <div class="lv-challenge-box">
+        <div class="lv-challenge-text" id="lv-challenge"></div>
+      </div>
+    </div>
+
+    <!-- Complete -->
+    <button class="lv-complete-btn" onclick="markComplete()">
+      ✅ أكملت الدرس — احصل على XP
+    </button>
+  </div>
+</div>
+
+</body>
+</html>

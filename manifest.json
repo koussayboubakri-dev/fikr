@@ -1,0 +1,28 @@
+{
+  "name": "فِكر — تعلّم البرمجة بالعربية",
+  "short_name": "فِكر",
+  "description": "منصة البرمجة العربية الأولى للأطفال من سن ٨ إلى ١٦",
+  "start_url": "/fikr/",
+  "scope": "/fikr/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a6b72",
+  "theme_color": "#1a6b72",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "fikr-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "fikr-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["education", "kids"]
+}
