@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>فِكر · درس ٣ — الحركة والأحداث</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --teal:#1a6b72;--teal-l:#2a9aa5;--teal-pale:#e0f5f7;
+  --gold:#c8922a;--gold-l:#e8b84b;--gold-pale:#fff8e6;
+  --green:#16a34a;--green-pale:#dcfce7;
+  --red:#dc2626;--red-pale:#fee2e2;
+  --purple:#7c3aed;--purple-pale:#ede9fe;
+  --blue:#2563eb;--blue-pale:#dbeafe;
+  --orange:#ea580c;--orange-pale:#ffedd5;
+  --yellow:#ca8a04;--yellow-pale:#fef9c3;
+  --pink:#db2777;--pink-pale:#fce7f3;
+  --bg:#f0faf8;--white:#fff;--text:#1a1d26;--soft:#64748b;--border:#e2e8f0;
+  --font:'Tajawal',sans-serif;--font-ui:'Cairo',sans-serif;
+  --r:16px;--r2:24px;--r3:36px;
+  --shadow:0 4px 20px rgba(0,0,0,0.08);--shadow-lg:0 8px 40px rgba(0,0,0,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+button{cursor:pointer;border:none;font-family:inherit}
+
+/* ── TOP BAR ── */
+.topbar{background:var(--white);border-bottom:2px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.logo{font-family:var(--font-ui);font-size:1.5rem;font-weight:900;color:var(--teal)}
+.logo span{color:var(--gold)}
+.lesson-pill{background:var(--pink-pale);color:var(--pink);font-family:var(--font-ui);font-size:0.78rem;font-weight:700;padding:5px 14px;border-radius:99px;border:1.5px solid rgba(219,39,119,0.2)}
+.xp-pill{background:var(--gold-pale);color:var(--gold);font-family:var(--font-ui);font-size:0.82rem;font-weight:800;padding:5px 14px;border-radius:99px;border:1.5px solid rgba(200,146,42,0.2);transition:.3s}
+.btn-back{font-family:var(--font-ui);font-size:0.82rem;font-weight:700;color:var(--soft);background:var(--border);padding:8px 18px;border-radius:99px;transition:.2s}
+.btn-back:hover{background:#cbd5e1;color:var(--text)}
+
+.prog-wrap{height:6px;background:#e2e8f0}
+.prog-fill{height:6px;background:linear-gradient(90deg,var(--pink),var(--gold-l));transition:width .5s cubic-bezier(.4,0,.2,1);border-radius:0 99px 99px 0}
+
+.step{display:none;animation:fadeUp .4s ease both}
+.step.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.step-body{max-width:800px;margin:0 auto;padding:40px 20px 120px}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#fce7f3 0%,#ede9fe 50%,#dbeafe 100%);border-radius:var(--r3);padding:52px 40px;text-align:center;border:2px solid rgba(219,39,119,0.1);box-shadow:var(--shadow);margin-bottom:24px;position:relative;overflow:hidden}
+.hero-emoji{font-size:4rem;margin-bottom:16px;display:block;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero-title{font-family:var(--font-ui);font-size:2rem;font-weight:900;color:var(--pink);margin-bottom:10px}
+.hero-sub{font-size:1rem;color:var(--soft);line-height:1.8;max-width:480px;margin:0 auto 28px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chip{display:flex;align-items:center;gap:6px;font-family:var(--font-ui);font-size:0.82rem;font-weight:700;padding:7px 16px;border-radius:99px;border:2px solid}
+.chip-pink{background:var(--pink-pale);color:var(--pink);border-color:rgba(219,39,119,0.2)}
+.chip-gold{background:var(--gold-pale);color:var(--gold);border-color:rgba(200,146,42,0.2)}
+.chip-green{background:var(--green-pale);color:var(--green);border-color:rgba(22,163,74,0.2)}
+
+/* ── SECTION LABELS ── */
+.s-tag{font-family:var(--font-ui);font-size:0.72rem;font-weight:700;color:var(--pink);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.s-title{font-family:var(--font-ui);font-size:1.6rem;font-weight:900;color:var(--text);margin-bottom:8px;line-height:1.3}
+.s-lead{font-size:0.97rem;color:var(--soft);line-height:1.8;margin-bottom:28px}
+
+/* ── BOXES ── */
+.hbox{border-radius:var(--r2);padding:24px 28px;margin:20px 0;border-right:5px solid}
+.hbox.pink{background:var(--pink-pale);border-color:var(--pink)}
+.hbox.teal{background:var(--teal-pale);border-color:var(--teal)}
+.hbox.green{background:var(--green-pale);border-color:var(--green)}
+.hbox.gold{background:var(--gold-pale);border-color:var(--gold)}
+.hbox h3{font-family:var(--font-ui);font-size:0.95rem;font-weight:800;margin-bottom:8px}
+.hbox.pink h3{color:var(--pink)}
+.hbox.teal h3{color:var(--teal)}
+.hbox.green h3{color:var(--green)}
+.hbox.gold h3{color:var(--gold)}
+.hbox p{font-size:0.92rem;color:var(--soft);line-height:1.85}
+.hbox strong{color:var(--text)}
+
+/* ── KEY CARDS ── */
+.key-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:20px 0}
+.key-card{border-radius:var(--r2);padding:22px 18px;text-align:center;border:2px solid;transition:.3s;cursor:default}
+.key-card:hover{transform:scale(1.04) translateY(-3px);box-shadow:var(--shadow-lg)}
+.key-card .kc-icon{font-size:2.4rem;margin-bottom:10px}
+.key-card .kc-name{font-family:var(--font-ui);font-weight:800;font-size:0.92rem;color:var(--text);margin-bottom:4px}
+.key-card .kc-key{font-family:'Courier New',monospace;font-size:0.85rem;font-weight:700;display:inline-block;background:var(--text);color:#fff;padding:3px 10px;border-radius:6px;margin-bottom:4px}
+.key-card .kc-desc{font-size:0.78rem;color:var(--soft);line-height:1.5}
+.key-card.up{background:#fce7f3;border-color:rgba(219,39,119,0.25)}
+.key-card.down{background:var(--teal-pale);border-color:rgba(26,107,114,0.25)}
+.key-card.left{background:var(--purple-pale);border-color:rgba(124,58,237,0.2)}
+.key-card.right{background:var(--blue-pale);border-color:rgba(37,99,235,0.2)}
+
+/* ── BLOCK BUILDER ── */
+.builder{background:var(--white);border:2px solid var(--border);border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow);margin:20px 0}
+.builder-head{background:linear-gradient(135deg,var(--pink),#9d174d);padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.builder-head-title{font-family:var(--font-ui);font-weight:800;color:#fff;font-size:0.95rem}
+.builder-head-sub{font-size:0.78rem;color:rgba(255,255,255,0.75);font-family:var(--font-ui)}
+.builder-body{display:grid;grid-template-columns:1fr 1fr;min-height:320px}
+
+.palette{background:#f8fafc;border-left:2px solid var(--border);padding:16px}
+.pal-label{font-family:var(--font-ui);font-size:0.72rem;font-weight:700;color:var(--soft);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.blk{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;margin-bottom:7px;font-family:var(--font-ui);font-size:0.82rem;font-weight:700;cursor:grab;transition:.2s;user-select:none;border:2px solid transparent}
+.blk:hover{transform:scale(1.03) translateX(-3px);box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.blk:active{cursor:grabbing;scale:0.97}
+.blk.used{opacity:0.3;cursor:not-allowed;pointer-events:none}
+.blk-ev{background:#fef9c3;color:#854d0e;border-color:#fde047}
+.blk-mo{background:var(--blue-pale);color:var(--blue);border-color:#93c5fd}
+.blk-co{background:var(--orange-pale);color:var(--orange);border-color:#fdba74}
+.blk-lo{background:var(--purple-pale);color:var(--purple);border-color:#c4b5fd}
+.blk-se{background:var(--teal-pale);color:var(--teal);border-color:rgba(26,107,114,0.4)}
+
+.dropzone{padding:14px;display:flex;flex-direction:column;min-height:300px;background:repeating-linear-gradient(0deg,transparent,transparent 35px,rgba(226,232,240,0.4) 35px,rgba(226,232,240,0.4) 36px)}
+.dz-label{font-family:var(--font-ui);font-size:0.72rem;font-weight:700;color:var(--soft);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.dz-ph{flex:1;border:2.5px dashed #f9a8d4;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-family:var(--font-ui);font-size:0.83rem;color:#f472b6;background:rgba(252,231,243,0.3);min-height:56px;transition:.2s;padding:12px;text-align:center}
+.dz-ph.over{border-color:var(--pink);background:rgba(252,231,243,0.6);color:var(--pink)}
+.blk-placed{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;margin-bottom:5px;font-family:var(--font-ui);font-size:0.82rem;font-weight:700;animation:blockIn .25s cubic-bezier(.34,1.56,.64,1) both;border:2px solid transparent}
+@keyframes blockIn{from{opacity:0;scale:0.6;transform:translateY(-8px)}to{opacity:1;scale:1;transform:none}}
+.blk-placed .rm{margin-right:auto;flex-shrink:0;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.1);color:rgba(0,0,0,0.4);font-size:0.7rem;display:flex;align-items:center;justify-content:center;transition:.15s}
+.blk-placed .rm:hover{background:rgba(220,38,38,0.15);color:var(--red)}
+
+.run-area{background:#1a1a2e;border-top:2px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn-run{font-family:var(--font-ui);font-weight:800;font-size:0.9rem;color:#fff;background:linear-gradient(135deg,#28c840,#16a34a);padding:11px 24px;border-radius:99px;transition:.2s;box-shadow:0 4px 14px rgba(22,163,74,0.4);display:flex;align-items:center;gap:8px}
+.btn-run:hover{transform:translateY(-2px)}
+.btn-clr{font-family:var(--font-ui);font-weight:700;font-size:0.85rem;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.07);padding:11px 18px;border-radius:99px;transition:.2s}
+.btn-clr:hover{background:rgba(255,255,255,0.12);color:#fff}
+.run-out{font-family:var(--font-ui);font-size:0.85rem;flex:1;padding:8px 14px;border-radius:var(--r);border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.5);min-height:36px;display:flex;align-items:center;transition:.3s}
+.run-out.ok{background:rgba(22,163,74,0.15);border-color:rgba(22,163,74,0.3);color:#4ade80}
+.run-out.err{background:rgba(220,38,38,0.1);border-color:rgba(220,38,38,0.2);color:#f87171}
+
+/* ── SCRATCH EMBED ── */
+.scratch-wrap{background:var(--white);border:2px solid var(--border);border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow);margin:20px 0}
+.scratch-bar{padding:12px 18px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px;background:#f8fafc}
+.sc-dot{width:10px;height:10px;border-radius:50%}
+.scratch-bar span{font-family:var(--font-ui);font-size:0.8rem;color:var(--soft);margin-right:auto}
+.scratch-bar a{font-family:var(--font-ui);font-size:0.78rem;font-weight:700;color:var(--pink);border:1.5px solid rgba(219,39,119,0.3);padding:5px 12px;border-radius:8px;text-decoration:none;transition:.2s}
+.scratch-bar a:hover{background:var(--pink-pale)}
+.scratch-task{background:var(--pink-pale);border:2px solid rgba(219,39,119,0.2);border-radius:var(--r);padding:14px 18px;margin:0 16px 16px;font-family:var(--font-ui);font-size:0.88rem;color:var(--pink);font-weight:600;line-height:1.7}
+
+/* ── QUIZ ── */
+.quiz-q{font-family:var(--font-ui);font-size:1.05rem;font-weight:800;color:var(--text);margin-bottom:18px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.quiz-opt{background:var(--white);border:2.5px solid var(--border);border-radius:var(--r);padding:14px 20px;font-family:var(--font-ui);font-size:0.92rem;font-weight:600;color:var(--soft);text-align:right;transition:.2s}
+.quiz-opt:hover{border-color:var(--pink);background:var(--pink-pale);color:var(--pink)}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-pale);color:var(--green)}
+.quiz-opt.wrong{border-color:var(--red);background:var(--red-pale);color:var(--red);animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.quiz-fb{border-radius:var(--r);padding:14px 18px;font-family:var(--font-ui);font-size:0.9rem;display:none;margin-bottom:16px;line-height:1.7;border:2px solid;font-weight:600}
+.quiz-fb.show{display:block;animation:fadeUp .3s ease}
+.quiz-fb.ok{background:var(--green-pale);border-color:rgba(22,163,74,0.3);color:var(--green)}
+.quiz-fb.no{background:var(--red-pale);border-color:rgba(220,38,38,0.25);color:var(--red)}
+
+/* ── DRAG-ORDER ── */
+.order-list{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.order-item{background:var(--white);border:2.5px solid var(--border);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;gap:14px;font-family:var(--font-ui);font-size:0.9rem;font-weight:600;color:var(--text);cursor:grab;transition:.2s;user-select:none}
+.order-item:hover{border-color:var(--pink);background:var(--pink-pale);transform:translateX(-4px)}
+.order-item.dragging{opacity:0.3;scale:0.97}
+.order-item.drag-over{border-color:var(--gold);background:var(--gold-pale)}
+.order-item.correct-pos{border-color:var(--green);background:var(--green-pale);color:var(--green)}
+.order-num{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:var(--pink-pale);color:var(--pink);font-family:var(--font-ui);font-size:0.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;transition:.2s}
+.order-item.correct-pos .order-num{background:var(--green);color:#fff}
+.order-handle{color:#cbd5e1;font-size:1rem;flex-shrink:0}
+
+/* ── CELEBRATION ── */
+.celebration{background:linear-gradient(135deg,#fce7f3,#ede9fe,#dcfce7);border-radius:var(--r3);padding:56px 32px;text-align:center;border:2px solid rgba(219,39,119,0.15);box-shadow:var(--shadow-lg)}
+.cel-emoji{font-size:4rem;display:block;margin-bottom:20px;animation:bounce 1s infinite}
+.xp-badge{display:inline-flex;align-items:center;gap:10px;background:var(--gold-pale);border:2.5px solid rgba(200,146,42,0.35);border-radius:99px;padding:12px 28px;font-family:var(--font-ui);font-size:1.4rem;font-weight:900;color:var(--gold);margin-bottom:20px;animation:popIn .5s .2s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes popIn{from{transform:scale(0.4);opacity:0}to{transform:scale(1);opacity:1}}
+.cel-title{font-family:var(--font-ui);font-size:2rem;font-weight:900;color:var(--pink);margin-bottom:10px}
+.cel-sub{font-size:1rem;color:var(--soft);line-height:1.8;margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto}
+.badge-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.badge-item{background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:14px 20px;display:flex;align-items:center;gap:10px;font-family:var(--font-ui);font-size:0.85rem;color:var(--soft);box-shadow:var(--shadow)}
+.badge-item .bi{font-size:1.5rem}
+.badge-item strong{color:var(--text);display:block;font-size:0.88rem}
+
+/* ── NAV ── */
+.step-nav{position:fixed;bottom:0;right:0;left:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);border-top:2px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,0.06)}
+.btn-next{font-family:var(--font-ui);font-weight:900;font-size:0.95rem;color:#fff;background:linear-gradient(135deg,var(--pink),#9d174d);padding:13px 32px;border-radius:99px;box-shadow:0 4px 16px rgba(219,39,119,0.35);transition:.2s}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(219,39,119,0.45)}
+.btn-next:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-prev{font-family:var(--font-ui);font-weight:700;font-size:0.9rem;color:var(--soft);background:#f1f5f9;padding:13px 22px;border-radius:99px;transition:.2s}
+.btn-prev:hover{background:#e2e8f0;color:var(--text)}
+.step-dots{display:flex;gap:6px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;transition:.3s}
+.dot.active{background:var(--pink);width:24px;border-radius:99px}
+.dot.done{background:var(--green)}
+
+@media(max-width:640px){
+  .key-grid{grid-template-columns:1fr 1fr}
+  .builder-body{grid-template-columns:1fr}
+  .palette{border-left:none;border-top:2px solid var(--border)}
+  .step-body{padding:28px 14px 110px}
+  .topbar{padding:0 14px}
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="logo">فِ<span>كر</span></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="lesson-pill">🌱 درس ٣</span>
+    <span class="xp-pill" id="xp">⭐ ٠ XP</span>
+  </div>
+  <button class="btn-back" onclick="window.location.href='index.html'">← رجوع</button>
+</nav>
+<div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+
+<!-- ══ STEP 1: HERO ══ -->
+<div class="step active" id="s1">
+  <div class="step-body">
+    <div class="hero">
+      <span class="hero-emoji">🕹️</span>
+      <h1 class="hero-title">الحركة والأحداث!</h1>
+      <p class="hero-sub">تحكّم في شخصيتك بالمفاتيح — ابنِ لعبة تتحرك فيها بالسهام!</p>
+      <div class="chips">
+        <div class="chip chip-pink">⏱️ ٣٥ دقيقة</div>
+        <div class="chip chip-gold">🏅 ١٠٠ XP</div>
+        <div class="chip chip-green">🕹️ Scratch حي</div>
+      </div>
+    </div>
+    <div class="hbox pink">
+      <h3>🎯 ماذا ستتعلم اليوم؟</h3>
+      <p>✦ الفرق بين الأحداث والأوامر<br/>✦ كيف تتحكم بالكائن بمفاتيح لوحة المفاتيح<br/>✦ بناء نظام حركة كامل بالأسهم ↑↓←→<br/>✦ تطبيق مباشر في Scratch!</p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <div></div>
+    <div class="step-dots">
+      <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" onclick="goStep(2)">ابدأ الدرس ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 2: EVENTS CONCEPT ══ -->
+<div class="step" id="s2">
+  <div class="step-body">
+    <div class="s-tag">المفهوم الأساسي</div>
+    <h2 class="s-title">الأحداث = متى ينفّذ البرنامج؟ 🎯</h2>
+    <p class="s-lead">حتى الآن كنا نبدأ عند ضغط العلَم 🚩 — لكن ماذا لو أردنا أن يستجيب البرنامج للمفاتيح؟</p>
+
+    <div class="key-grid">
+      <div class="key-card up">
+        <div class="kc-icon">⬆️</div>
+        <div class="kc-name">السهم للأعلى</div>
+        <div class="kc-key">↑</div>
+        <div class="kc-desc">الكائن يتحرك للأعلى</div>
+      </div>
+      <div class="key-card down">
+        <div class="kc-icon">⬇️</div>
+        <div class="kc-name">السهم للأسفل</div>
+        <div class="kc-key">↓</div>
+        <div class="kc-desc">الكائن يتحرك للأسفل</div>
+      </div>
+      <div class="key-card left">
+        <div class="kc-icon">⬅️</div>
+        <div class="kc-name">السهم لليسار</div>
+        <div class="kc-key">←</div>
+        <div class="kc-desc">الكائن يتحرك يساراً</div>
+      </div>
+      <div class="key-card right">
+        <div class="kc-icon">➡️</div>
+        <div class="kc-name">السهم لليمين</div>
+        <div class="kc-key">→</div>
+        <div class="kc-desc">الكائن يتحرك يميناً</div>
+      </div>
+    </div>
+
+    <div class="hbox teal">
+      <h3>💡 الحدث = الزناد</h3>
+      <p>في Scratch، بلوكة <strong>"عند الضغط على مفتاح ← السهم"</strong> هي الزناد — كل ضغطة تُطلق الأمر التالي مباشرة!</p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(1)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot active"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" onclick="goStep(3)">فهمت! ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 3: BLOCK BUILDER ══ -->
+<div class="step" id="s3">
+  <div class="step-body">
+    <div class="s-tag">ابنِ نظام الحركة 🧩</div>
+    <h2 class="s-title">رتّب البلوكات الصحيحة!</h2>
+    <p class="s-lead">لتحريك الكائن للأعلى عند ضغط السهم ↑ — تحتاج البلوكتين بالترتيب الصحيح. اسحبهما!</p>
+
+    <div class="builder">
+      <div class="builder-head">
+        <div>
+          <div class="builder-head-title">🕹️ نظام حركة السهم ↑</div>
+          <div class="builder-head-sub">اسحب بلوكة الحدث أولاً، ثم بلوكة الحركة</div>
+        </div>
+      </div>
+      <div class="builder-body">
+        <div class="dropzone" id="dz"
+          ondragover="event.preventDefault();document.getElementById('dzph').classList.add('over')"
+          ondragleave="document.getElementById('dzph').classList.remove('over')"
+          ondrop="doDrop(event)">
+          <div class="dz-label">🔧 برنامجي</div>
+          <div id="placed"></div>
+          <div class="dz-ph" id="dzph">اسحب البلوكتين هنا بالترتيب...</div>
+        </div>
+        <div class="palette">
+          <div class="pal-label">📦 البلوكات</div>
+          <div class="blk blk-ev" draggable="true" id="b-key" data-id="key" data-label="🟡 عند الضغط على ↑" ondragstart="doDragStart(event)">🟡 عند الضغط على ↑</div>
+          <div class="blk blk-mo" draggable="true" id="b-move" data-id="move" data-label="🔵 غيّر y بمقدار 10" ondragstart="doDragStart(event)">🔵 غيّر y بمقدار ١٠</div>
+          <div class="blk blk-lo" draggable="true" id="b-say" data-id="say" data-label="🟣 قل: أنا أتحرك!" ondragstart="doDragStart(event)">🟣 قل: أنا أتحرك!</div>
+          <div class="blk blk-co" draggable="true" id="b-wait" data-id="wait" data-label="🟠 انتظر 0.5 ثانية" ondragstart="doDragStart(event)">🟠 انتظر ٠.٥ ثانية</div>
+          <div class="blk blk-se" draggable="true" id="b-flag" data-id="flag" data-label="🟡 عند النقر على 🚩" ondragstart="doDragStart(event)">🟡 عند النقر على 🚩</div>
+        </div>
+      </div>
+      <div class="run-area">
+        <button class="btn-run" onclick="doRun()">▶ شغّل</button>
+        <button class="btn-clr" onclick="doClear()">🗑️ مسح</button>
+        <div class="run-out" id="run-out">اضغط شغّل لاختبار البرنامج</div>
+      </div>
+    </div>
+
+    <div class="hbox gold">
+      <h3>💡 تلميح</h3>
+      <p>ابدأ بـ <strong>بلوكة الحدث (الصفراء)</strong> — البرنامج يسأل "متى؟" أولاً. ثم يسأل "ماذا أفعل؟".</p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(2)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div><div class="dot active"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" id="s3-next" onclick="goStep(4)" disabled>التالي ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 4: SCRATCH LIVE ══ -->
+<div class="step" id="s4">
+  <div class="step-body">
+    <div class="s-tag">جرّب بنفسك في Scratch! 🚀</div>
+    <h2 class="s-title">ابنِ نظام الحركة الكامل</h2>
+    <p class="s-lead">الآن طبّق ما تعلمته — ابنِ الكود الكامل للأسهم الأربعة في Scratch أدناه!</p>
+
+    <div class="scratch-wrap">
+      <div class="scratch-bar">
+        <div class="sc-dot" style="background:#ff5f57"></div>
+        <div class="sc-dot" style="background:#febc2e"></div>
+        <div class="sc-dot" style="background:#28c840"></div>
+        <span>Scratch — بيئة البرمجة الحية</span>
+        <a href="https://scratch.mit.edu/projects/editor/" target="_blank">فتح كاملاً ↗</a>
+      </div>
+      <div class="scratch-task">
+        🎯 <strong>مهمتك:</strong> ابنِ ٤ مجموعات بلوكات — واحدة لكل سهم (↑ ↓ ← →)<br/>
+        كل مجموعة: <strong>🟡 عند الضغط على [سهم]</strong> ثم <strong>🔵 غيّر x أو y بمقدار ١٠</strong><br/>
+        اضغط المفاتيح وشاهد الكائن يتحرك! 🕹️
+      </div>
+      <iframe
+        src="https://scratch.mit.edu/projects/editor/"
+        width="100%" height="500"
+        allow="microphone; camera"
+        style="display:block;border:none">
+      </iframe>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(3)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+      <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" onclick="goStep(5)">جرّبته ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 5: QUIZ ══ -->
+<div class="step" id="s5">
+  <div class="step-body">
+    <div class="s-tag">اختبر نفسك 🎯</div>
+    <h2 class="s-title">سؤالان سريعان!</h2>
+    <p class="s-lead">فكّر جيداً — ما تعلمته في هذا الدرس</p>
+
+    <div style="background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:28px;box-shadow:var(--shadow);margin-bottom:16px">
+      <div class="quiz-q">١. ما وظيفة بلوكة "عند الضغط على مفتاح" في Scratch؟</div>
+      <div class="quiz-opts" id="q1">
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1fb','s5a')">تحرّك الكائن مباشرة</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',true,'q1fb','s5a')">تُحدّد متى يبدأ الكود عند ضغط المفتاح</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1fb','s5a')">تجعل الكائن يتكلم</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1fb','s5a')">توقف البرنامج</button>
+      </div>
+      <div class="quiz-fb" id="q1fb"></div>
+    </div>
+
+    <div style="background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:28px;box-shadow:var(--shadow)" id="q2-wrap" style="display:none">
+      <div class="quiz-q">٢. لتحريك الكائن يميناً في Scratch، أي بلوكة تستخدم؟</div>
+      <div class="quiz-opts" id="q2">
+        <button class="quiz-opt" onclick="quiz(this,'q2',false,'q2fb','s5-next')">غيّر y بمقدار ١٠</button>
+        <button class="quiz-opt" onclick="quiz(this,'q2',true,'q2fb','s5-next')">غيّر x بمقدار ١٠</button>
+        <button class="quiz-opt" onclick="quiz(this,'q2',false,'q2fb','s5-next')">تحرك ١٠ خطوات فقط</button>
+        <button class="quiz-opt" onclick="quiz(this,'q2',false,'q2fb','s5-next')">اتجه للزاوية 90</button>
+      </div>
+      <div class="quiz-fb" id="q2fb"></div>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(4)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+      <div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" id="s5-next" onclick="goStep(6)" disabled>التالي ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 6: ORDER CHALLENGE ══ -->
+<div class="step" id="s6">
+  <div class="step-body">
+    <div class="s-tag">تحدي الترتيب 🏆</div>
+    <h2 class="s-title">رتّب كود الحركة الكامل!</h2>
+    <p class="s-lead">هذه بلوكات برنامج يتحرك للأعلى ويقول "وصلت!" — رتّبها بالترتيب الصحيح!</p>
+
+    <div class="order-list" id="order-list">
+      <div class="order-item" draggable="true" data-correct="3" ondragstart="dragItem(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropItem(event,this)">
+        <span class="order-handle">⠿</span><span class="order-num">?</span><span>🟣 قل: وصلت! لـ ٢ ثانية</span>
+      </div>
+      <div class="order-item" draggable="true" data-correct="1" ondragstart="dragItem(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropItem(event,this)">
+        <span class="order-handle">⠿</span><span class="order-num">?</span><span>🟡 عند الضغط على ↑</span>
+      </div>
+      <div class="order-item" draggable="true" data-correct="4" ondragstart="dragItem(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropItem(event,this)">
+        <span class="order-handle">⠿</span><span class="order-num">?</span><span>🟠 انتظر ٠.٢ ثانية</span>
+      </div>
+      <div class="order-item" draggable="true" data-correct="2" ondragstart="dragItem(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropItem(event,this)">
+        <span class="order-handle">⠿</span><span class="order-num">?</span><span>🔵 غيّر y بمقدار ١٠</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn-run" onclick="checkOrder()">✓ تحقق</button>
+      <button class="btn-clr" style="background:#f1f5f9;color:var(--soft)" onclick="shuffleOrder()">🔀 خلط</button>
+    </div>
+    <div class="quiz-fb" id="order-fb" style="margin-top:12px"></div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(5)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+      <div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" id="s6-next" onclick="goStep(7)" disabled>اكتملت! ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 7: CELEBRATION ══ -->
+<div class="step" id="s7">
+  <div class="step-body">
+    <div class="celebration">
+      <span class="cel-emoji">🕹️</span>
+      <div class="xp-badge">🏅 +١٠٠ XP</div>
+      <h2 class="cel-title">تحكمت في الكائن!</h2>
+      <p class="cel-sub">الآن تعرف كيف تتحكم في أي شخصية بالمفاتيح — هذا أساس كل لعبة في العالم!<br/><strong>الدرس الرابع ينتظرك — ستبني لعبة كاملة!</strong></p>
+      <div class="badge-row">
+        <div class="badge-item"><span class="bi">🕹️</span><div><strong>سيد التحكم</strong>أتقنت الحركة بالمفاتيح</div></div>
+        <div class="badge-item"><span class="bi">⬆️</span><div><strong>رباعي الاتجاهات</strong>بنيت الأسهم الأربعة</div></div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-next" onclick="finish()" style="padding:15px 40px;font-size:1rem">✅ احفظ تقدمي</button>
+        <button class="btn-prev" onclick="goStep(1)" style="padding:15px 24px">🔁 أعد الدرس</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── AUTH GUARD — redirect to login if not signed in ──
+(async () => {
+  try {
+    const { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    const cfg = {apiKey:"AIzaSyBeD4ng-pNWSLgkrNmK1Re8FYnmCNCMBU8",authDomain:"fikr-app-fbdf7.firebaseapp.com",projectId:"fikr-app-fbdf7",storageBucket:"fikr-app-fbdf7.firebasestorage.app",messagingSenderId:"378212535527",appId:"1:378212535527:web:99331970433b4428dd2642"};
+    const app  = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const auth = getAuth(app);
+    await new Promise(resolve => {
+      const unsub = onAuthStateChanged(auth, u => { unsub(); resolve(u); });
+    }).then(user => {
+      if (!user) window.location.href = "index.html";
+    });
+  } catch(e) {}
+})();
+let step=1, xp=0;
+const TOTAL=7;
+let placed=[], dragSrcItem=null;
+const CORRECT=['key','move'];
+
+function goStep(n){
+  document.getElementById('s'+step).classList.remove('active');
+  step=n;
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('prog').style.width=((n-1)/(TOTAL-1)*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function addXP(a){
+  xp+=a;
+  const el=document.getElementById('xp');
+  el.textContent='⭐ '+xp+' XP';
+  el.style.transform='scale(1.4)';
+  setTimeout(()=>el.style.transform='',300);
+}
+
+// ── BLOCK BUILDER ──
+function doDragStart(e){ e.dataTransfer.setData('id',e.currentTarget.dataset.id); e.dataTransfer.setData('label',e.currentTarget.dataset.label); }
+function doDrop(e){
+  e.preventDefault();
+  document.getElementById('dzph').classList.remove('over');
+  const id=e.dataTransfer.getData('id');
+  const label=e.dataTransfer.getData('label');
+  if(!id||placed.includes(id)) return;
+  placed.push(id);
+  document.getElementById('b-'+id)?.classList.add('used');
+  if(placed.length>0) document.getElementById('dzph').style.display='none';
+  const wrap=document.getElementById('placed');
+  const div=document.createElement('div');
+  const colors={key:'background:#fef9c3;color:#854d0e;border-color:#fde047',move:'background:#dbeafe;color:#1d4ed8;border-color:#93c5fd',say:'background:#ede9fe;color:#6d28d9;border-color:#c4b5fd',wait:'background:#ffedd5;color:#9a3412;border-color:#fdba74',flag:'background:#fef9c3;color:#854d0e;border-color:#fde047'};
+  div.className='blk-placed';
+  div.dataset.id=id;
+  div.style.cssText=colors[id]||'background:#f1f5f9;color:#374151';
+  div.innerHTML=`<span style="flex:1">${label}</span><button class="rm" onclick="doRemove('${id}')">✕</button>`;
+  wrap.appendChild(div);
+  addXP(5);
+}
+function doRemove(id){
+  placed.splice(placed.indexOf(id),1);
+  document.getElementById('b-'+id)?.classList.remove('used');
+  document.querySelector(`[data-id="${id}"].blk-placed`)?.remove();
+  if(placed.length===0) document.getElementById('dzph').style.display='';
+  document.getElementById('run-out').className='run-out';
+  document.getElementById('run-out').textContent='اضغط شغّل لاختبار البرنامج';
+}
+function doClear(){
+  placed=[];
+  document.getElementById('placed').innerHTML='';
+  document.getElementById('dzph').style.display='';
+  document.querySelectorAll('.blk').forEach(b=>b.classList.remove('used'));
+  document.getElementById('run-out').className='run-out';
+  document.getElementById('run-out').textContent='اضغط شغّل لاختبار البرنامج';
+}
+function doRun(){
+  const out=document.getElementById('run-out');
+  if(placed.length===0){out.className='run-out err';out.textContent='⚠️ لم تضع أي بلوكات!';return;}
+  const hasKey=placed[0]==='key';
+  const hasMove=placed.includes('move');
+  if(hasKey && hasMove){
+    out.className='run-out ok';
+    out.textContent='✅ ممتاز! الكائن يتحرك للأعلى عند ضغط ↑ 🎉';
+    addXP(30);
+    document.getElementById('s3-next').disabled=false;
+  } else if(!hasKey){
+    out.className='run-out err';
+    out.textContent='❌ ابدأ ببلوكة الحدث (عند الضغط على ↑) أولاً!';
+  } else {
+    out.className='run-out err';
+    out.textContent='❌ تحتاج بلوكة الحركة (غيّر y) بعد الحدث!';
+  }
+}
+
+// ── QUIZ ──
+let s5aDone=false;
+function quiz(btn,qid,correct,fbId,nextId){
+  document.querySelectorAll('#'+qid+' .quiz-opt').forEach(o=>o.disabled=true);
+  const fb=document.getElementById(fbId);
+  if(correct){
+    btn.classList.add('correct');
+    const msgs={q1fb:'✅ <strong>صحيح!</strong> بلوكة الحدث تُحدّد الشرط — "متى يبدأ الكود"!',q2fb:'✅ <strong>ممتاز!</strong> x للحركة الأفقية (يمين/يسار) و y للحركة العمودية (أعلى/أسفل)!'};
+    fb.innerHTML=msgs[fbId]||'✅ صحيح!';
+    fb.className='quiz-fb show ok';
+    addXP(20);
+    if(nextId==='s5a'){
+      s5aDone=true;
+      setTimeout(()=>{ document.getElementById('q2-wrap').style.display='block'; },600);
+    }
+    if(nextId==='s5-next' && s5aDone){
+      document.getElementById('s5-next').disabled=false;
+    }
+  } else {
+    btn.classList.add('wrong');
+    fb.innerHTML='❌ ليس هذا! فكّر مجدداً.';
+    fb.className='quiz-fb show no';
+    setTimeout(()=>{
+      document.querySelectorAll('#'+qid+' .quiz-opt').forEach(o=>o.disabled=false);
+      btn.classList.remove('wrong'); fb.className='quiz-fb';
+    },1400);
+  }
+}
+
+// ── ORDER DRAG ──
+function dragItem(e){ dragSrcItem=e.currentTarget; setTimeout(()=>e.currentTarget.classList.add('dragging'),0); }
+document.addEventListener('dragend',()=>document.querySelectorAll('.order-item').forEach(i=>i.classList.remove('dragging','drag-over')));
+function dropItem(e,target){
+  e.preventDefault(); target.classList.remove('drag-over');
+  if(!dragSrcItem||dragSrcItem===target) return;
+  const list=document.getElementById('order-list');
+  const items=[...list.children];
+  const si=items.indexOf(dragSrcItem),ti=items.indexOf(target);
+  if(si<ti) list.insertBefore(dragSrcItem,target.nextSibling);
+  else list.insertBefore(dragSrcItem,target);
+  updateNums();
+}
+// Touch support
+let touchSrc=null;
+document.addEventListener('touchstart',e=>{const t=e.target.closest('.order-item');if(t){touchSrc=t;t.classList.add('dragging');}},{passive:true});
+document.addEventListener('touchmove',e=>{if(!touchSrc)return;e.preventDefault();const touch=e.touches[0];const els=document.elementsFromPoint(touch.clientX,touch.clientY);const target=els.find(el=>el.classList.contains('order-item')&&el!==touchSrc);document.querySelectorAll('.order-item').forEach(i=>i.classList.remove('drag-over'));if(target)target.classList.add('drag-over');},{passive:false});
+document.addEventListener('touchend',e=>{if(!touchSrc)return;const touch=e.changedTouches[0];const els=document.elementsFromPoint(touch.clientX,touch.clientY);const target=els.find(el=>el.classList.contains('order-item')&&el!==touchSrc);if(target){const list=document.getElementById('order-list');const items=[...list.children];const si=items.indexOf(touchSrc),ti=items.indexOf(target);if(si<ti)list.insertBefore(touchSrc,target.nextSibling);else list.insertBefore(touchSrc,target);updateNums();}document.querySelectorAll('.order-item').forEach(i=>i.classList.remove('dragging','drag-over'));touchSrc=null;});
+
+function updateNums(){
+  document.querySelectorAll('#order-list .order-item').forEach((item,i)=>{item.querySelector('.order-num').textContent=i+1;item.classList.remove('correct-pos');});
+  document.getElementById('order-fb').className='quiz-fb';
+  document.getElementById('s6-next').disabled=true;
+}
+function checkOrder(){
+  const items=document.querySelectorAll('#order-list .order-item');
+  let c=0;
+  items.forEach((item,i)=>{if(i+1===parseInt(item.dataset.correct)){item.classList.add('correct-pos');c++;}else item.classList.remove('correct-pos');});
+  const fb=document.getElementById('order-fb');
+  if(c===items.length){
+    fb.innerHTML='🎉 <strong>مثالي!</strong> هذا هو الترتيب الصحيح — حدث، ثم حركة، ثم كلام، ثم انتظار!';
+    fb.className='quiz-fb show ok';
+    addXP(30);
+    document.getElementById('s6-next').disabled=false;
+  } else {
+    fb.innerHTML=`🔄 ${c} من ${items.length} صحيحة — تذكّر: الحدث أولاً دائماً!`;
+    fb.className='quiz-fb show no';
+  }
+}
+function shuffleOrder(){
+  const list=document.getElementById('order-list');
+  const items=[...list.children];
+  for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));list.appendChild(items[j]);items.splice(j,1);}
+  updateNums();
+}
+
+// ── FINISH — FIREBASE SAVE ──
+async function finish(){
+  const btn=document.querySelector('.celebration .btn-next');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ الحفظ... ⏳';}
+  try {
+    const {initializeApp,getApps}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const {getAuth,onAuthStateChanged}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    const {getFirestore,doc,getDoc,updateDoc,arrayUnion}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const cfg={apiKey:"AIzaSyBeD4ng-pNWSLgkrNmK1Re8FYnmCNCMBU8",authDomain:"fikr-app-fbdf7.firebaseapp.com",projectId:"fikr-app-fbdf7",storageBucket:"fikr-app-fbdf7.firebasestorage.app",messagingSenderId:"378212535527",appId:"1:378212535527:web:99331970433b4428dd2642"};
+    const app=getApps().length?getApps()[0]:initializeApp(cfg);
+    const auth=getAuth(app);const db=getFirestore(app);
+    const user=await new Promise(resolve=>{
+      const unsub=onAuthStateChanged(auth,u=>{unsub();resolve(u);});
+    });
+    if(user){
+      const snap=await getDoc(doc(db,'users',user.uid));
+      const curXP=snap.data()?.xp||0;
+      await updateDoc(doc(db,'users',user.uid),{lessonsCompleted:arrayUnion('lesson3'),xp:curXP+100});
+    }
+    if(btn){btn.textContent='✅ تم الحفظ! جارٍ العودة...';}
+    setTimeout(()=>{window.location.href='index.html';},1000);
+  } catch(e){ window.location.href='index.html'; }
+}
+
+updateNums();
+</script>
+</body>
+</html>

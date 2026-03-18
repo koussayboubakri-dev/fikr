@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>فِكر · درس ١ — ما هي البرمجة؟</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --teal:#1a6b72; --teal-l:#2a9aa5; --teal-pale:#e0f5f7;
+  --gold:#c8922a; --gold-l:#e8b84b; --gold-pale:#fff8e6;
+  --green:#16a34a; --green-pale:#dcfce7;
+  --red:#dc2626; --red-pale:#fee2e2;
+  --purple:#7c3aed; --purple-pale:#ede9fe;
+  --blue:#2563eb; --blue-pale:#dbeafe;
+  --orange:#ea580c; --orange-pale:#ffedd5;
+  --bg:#f0faf8; --white:#ffffff; --text:#1a1d26; --soft:#64748b; --border:#e2e8f0;
+  --font:'Tajawal',sans-serif; --font-ui:'Cairo',sans-serif;
+  --r:16px; --r2:24px; --r3:36px;
+  --shadow:0 4px 20px rgba(0,0,0,0.08); --shadow-lg:0 8px 40px rgba(0,0,0,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+button{cursor:pointer;border:none;font-family:inherit}
+img{display:block;max-width:100%}
+
+/* ── TOP BAR ── */
+.topbar{
+  background:var(--white);border-bottom:2px solid var(--border);
+  padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.06);
+}
+.logo{font-family:var(--font-ui);font-size:1.5rem;font-weight:900;color:var(--teal)}
+.logo span{color:var(--gold)}
+.topbar-center{display:flex;align-items:center;gap:8px}
+.lesson-pill{
+  background:var(--teal-pale);color:var(--teal);
+  font-family:var(--font-ui);font-size:0.78rem;font-weight:700;
+  padding:5px 14px;border-radius:99px;border:1.5px solid rgba(26,107,114,0.2);
+}
+.xp-pill{
+  background:var(--gold-pale);color:var(--gold);
+  font-family:var(--font-ui);font-size:0.82rem;font-weight:800;
+  padding:5px 14px;border-radius:99px;border:1.5px solid rgba(200,146,42,0.2);
+  transition:.3s;
+}
+.btn-back{
+  font-family:var(--font-ui);font-size:0.82rem;font-weight:700;
+  color:var(--soft);background:var(--border);
+  padding:8px 18px;border-radius:99px;transition:.2s;
+}
+.btn-back:hover{background:#cbd5e1;color:var(--text)}
+
+/* ── PROGRESS ── */
+.prog-wrap{height:6px;background:#e2e8f0}
+.prog-fill{height:6px;background:linear-gradient(90deg,var(--teal),var(--gold-l));transition:width .5s cubic-bezier(.4,0,.2,1);border-radius:0 99px 99px 0}
+
+/* ── STEP SYSTEM ── */
+.step{display:none;animation:fadeUp .4s ease both}
+.step.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.step-body{max-width:780px;margin:0 auto;padding:40px 20px 120px}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg,#e0f7f5 0%,#fef9e7 50%,#e8f4fd 100%);
+  border-radius:var(--r3);padding:52px 40px;text-align:center;
+  border:2px solid rgba(26,107,114,0.1);
+  box-shadow:var(--shadow);margin-bottom:24px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(26,107,114,0.08),transparent 70%);
+}
+.hero-emoji{font-size:4rem;margin-bottom:16px;display:block;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero-title{font-family:var(--font-ui);font-size:2rem;font-weight:900;color:var(--teal);margin-bottom:10px}
+.hero-sub{font-size:1rem;color:var(--soft);line-height:1.8;max-width:480px;margin:0 auto 28px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:28px}
+.chip{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--font-ui);font-size:0.82rem;font-weight:700;
+  padding:7px 16px;border-radius:99px;border:2px solid;
+}
+.chip-teal{background:var(--teal-pale);color:var(--teal);border-color:rgba(26,107,114,0.2)}
+.chip-gold{background:var(--gold-pale);color:var(--gold);border-color:rgba(200,146,42,0.2)}
+.chip-purple{background:var(--purple-pale);color:var(--purple);border-color:rgba(124,58,237,0.2)}
+
+/* ── SECTION HEADER ── */
+.s-tag{font-family:var(--font-ui);font-size:0.72rem;font-weight:700;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.s-title{font-family:var(--font-ui);font-size:1.6rem;font-weight:900;color:var(--text);margin-bottom:8px;line-height:1.3}
+.s-lead{font-size:0.97rem;color:var(--soft);line-height:1.8;margin-bottom:28px}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:28px;box-shadow:var(--shadow);transition:.25s}
+.card:hover{border-color:var(--teal);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+
+/* ── CONCEPT GRID ── */
+.concept-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:20px 0}
+.concept-card{
+  border-radius:var(--r2);padding:22px 18px;text-align:center;
+  border:2px solid;transition:.3s;cursor:default;
+}
+.concept-card:hover{transform:scale(1.04) translateY(-3px);box-shadow:var(--shadow-lg)}
+.concept-card.teal{background:var(--teal-pale);border-color:rgba(26,107,114,0.25)}
+.concept-card.gold{background:var(--gold-pale);border-color:rgba(200,146,42,0.25)}
+.concept-card.purple{background:var(--purple-pale);border-color:rgba(124,58,237,0.2)}
+.concept-card.blue{background:var(--blue-pale);border-color:rgba(37,99,235,0.2)}
+.concept-card .cc-icon{font-size:2.6rem;margin-bottom:10px;transition:.3s}
+.concept-card:hover .cc-icon{transform:scale(1.2) rotate(5deg)}
+.concept-card .cc-title{font-family:var(--font-ui);font-weight:800;font-size:0.92rem;color:var(--text);margin-bottom:5px}
+.concept-card .cc-desc{font-size:0.8rem;color:var(--soft);line-height:1.6}
+
+/* ── HIGHLIGHT BOX ── */
+.hbox{
+  border-radius:var(--r2);padding:24px 28px;margin:20px 0;
+  border-right:5px solid;
+}
+.hbox.teal{background:var(--teal-pale);border-color:var(--teal)}
+.hbox.gold{background:var(--gold-pale);border-color:var(--gold)}
+.hbox h3{font-family:var(--font-ui);font-size:0.95rem;font-weight:800;margin-bottom:8px}
+.hbox.teal h3{color:var(--teal)}
+.hbox.gold h3{color:var(--gold)}
+.hbox p{font-size:0.92rem;color:var(--soft);line-height:1.85}
+.hbox strong{color:var(--text)}
+
+/* ══════════════════════════
+   BLOCK BUILDER
+══════════════════════════ */
+.builder-wrap{
+  background:var(--white);border:2px solid var(--border);
+  border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow);margin:20px 0;
+}
+.builder-header{
+  background:linear-gradient(135deg,var(--teal),var(--teal-l));
+  padding:16px 24px;display:flex;align-items:center;justify-content:space-between;
+}
+.builder-title{font-family:var(--font-ui);font-weight:800;color:#fff;font-size:0.95rem}
+.builder-subtitle{font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:var(--font-ui)}
+.builder-body{display:grid;grid-template-columns:1fr 1fr;min-height:320px}
+
+/* Block palette */
+.palette{
+  background:#f8fafc;border-left:2px solid var(--border);
+  padding:16px;
+}
+.palette-label{font-family:var(--font-ui);font-size:0.72rem;font-weight:700;color:var(--soft);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.block-source{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;border-radius:var(--r);margin-bottom:8px;
+  font-family:var(--font-ui);font-size:0.85rem;font-weight:700;
+  cursor:grab;transition:.2s;user-select:none;border:2px solid transparent;
+}
+.block-source:hover{transform:scale(1.03);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.block-source:active{cursor:grabbing;scale:0.97}
+.block-source.used{opacity:0.35;cursor:not-allowed;pointer-events:none}
+.bs-ev{background:#fef9c3;color:#854d0e;border-color:#fde047}
+.bs-mo{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd}
+.bs-lo{background:#f3e8ff;color:#6d28d9;border-color:#c4b5fd}
+.bs-co{background:#ffedd5;color:#9a3412;border-color:#fdba74}
+.bs-gr{background:#dcfce7;color:#15803d;border-color:#86efac}
+
+/* Drop zone */
+.dropzone{
+  padding:16px;min-height:280px;
+  display:flex;flex-direction:column;
+  background:repeating-linear-gradient(0deg,transparent,transparent 39px,#e2e8f0 39px,#e2e8f0 40px);
+}
+.dropzone-label{font-family:var(--font-ui);font-size:0.72rem;font-weight:700;color:var(--soft);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.drop-placeholder{
+  flex:1;border:2.5px dashed #cbd5e1;border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-ui);font-size:0.85rem;color:#94a3b8;
+  background:rgba(226,232,240,0.3);min-height:60px;
+  transition:.2s;
+}
+.drop-placeholder.dragover{border-color:var(--teal);background:var(--teal-pale);color:var(--teal)}
+.block-placed{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;border-radius:var(--r);margin-bottom:6px;
+  font-family:var(--font-ui);font-size:0.85rem;font-weight:700;
+  position:relative;animation:blockDrop .25s cubic-bezier(.34,1.56,.64,1) both;
+  border:2px solid transparent;
+}
+@keyframes blockDrop{from{opacity:0;transform:scale(0.7) translateY(-10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.block-placed .remove-btn{
+  margin-right:auto;flex-shrink:0;
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(0,0,0,0.12);color:rgba(0,0,0,0.5);
+  font-size:0.75rem;display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.block-placed .remove-btn:hover{background:rgba(220,38,38,0.15);color:var(--red)}
+.bp-ev{background:#fef9c3;color:#854d0e;border-color:#fde047}
+.bp-mo{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd}
+.bp-lo{background:#f3e8ff;color:#6d28d9;border-color:#c4b5fd}
+.bp-co{background:#ffedd5;color:#9a3412;border-color:#fdba74}
+.bp-gr{background:#dcfce7;color:#15803d;border-color:#86efac}
+
+/* Run area */
+.run-area{
+  background:var(--white);border-top:2px solid var(--border);
+  padding:14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.btn-run{
+  font-family:var(--font-ui);font-weight:800;font-size:0.9rem;
+  color:#fff;background:linear-gradient(135deg,var(--green),#059669);
+  padding:11px 28px;border-radius:99px;transition:.2s;
+  box-shadow:0 4px 14px rgba(22,163,74,0.35);
+}
+.btn-run:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(22,163,74,0.45)}
+.btn-clear{
+  font-family:var(--font-ui);font-weight:700;font-size:0.85rem;
+  color:var(--soft);background:#f1f5f9;padding:11px 20px;border-radius:99px;transition:.2s;
+}
+.btn-clear:hover{background:#e2e8f0;color:var(--text)}
+.run-output{
+  font-family:var(--font-ui);font-size:0.85rem;color:var(--text);
+  flex:1;padding:8px 14px;background:#f8fafc;border-radius:var(--r);border:1.5px solid var(--border);
+  min-height:38px;display:flex;align-items:center;
+  transition:.3s;
+}
+.run-output.success{background:var(--green-pale);border-color:rgba(22,163,74,0.3);color:var(--green)}
+.run-output.error{background:var(--red-pale);border-color:rgba(220,38,38,0.25);color:var(--red)}
+
+/* ── QUIZ ── */
+.quiz-q{font-family:var(--font-ui);font-size:1.05rem;font-weight:800;color:var(--text);margin-bottom:18px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.quiz-opt{
+  background:var(--white);border:2.5px solid var(--border);
+  border-radius:var(--r);padding:14px 20px;
+  font-family:var(--font-ui);font-size:0.92rem;font-weight:600;color:var(--soft);
+  text-align:right;transition:.2s;display:flex;align-items:center;gap:12px;
+}
+.quiz-opt:hover{border-color:var(--teal);background:var(--teal-pale);color:var(--teal)}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-pale);color:var(--green)}
+.quiz-opt.wrong{border-color:var(--red);background:var(--red-pale);color:var(--red);animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.quiz-fb{border-radius:var(--r);padding:14px 18px;font-family:var(--font-ui);font-size:0.9rem;display:none;margin-bottom:16px;line-height:1.7;border:2px solid;font-weight:600}
+.quiz-fb.show{display:block;animation:fadeUp .3s ease}
+.quiz-fb.ok{background:var(--green-pale);border-color:rgba(22,163,74,0.3);color:var(--green)}
+.quiz-fb.no{background:var(--red-pale);border-color:rgba(220,38,38,0.25);color:var(--red)}
+
+/* ── DRAG ORDER ── */
+.order-list{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.order-item{
+  background:var(--white);border:2.5px solid var(--border);
+  border-radius:var(--r);padding:14px 18px;
+  display:flex;align-items:center;gap:14px;
+  font-family:var(--font-ui);font-size:0.9rem;font-weight:600;color:var(--text);
+  cursor:grab;transition:.2s;user-select:none;
+}
+.order-item:hover{border-color:var(--teal-l);background:var(--teal-pale);transform:translateX(-4px)}
+.order-item.dragging{opacity:0.3;scale:0.97}
+.order-item.drag-over{border-color:var(--gold);background:var(--gold-pale);transform:scale(1.01)}
+.order-item.correct-pos{border-color:var(--green);background:var(--green-pale);color:var(--green)}
+.order-num{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  background:var(--teal-pale);color:var(--teal);
+  font-family:var(--font-ui);font-size:0.8rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.order-item.correct-pos .order-num{background:var(--green);color:#fff}
+.order-emoji{font-size:1.3rem;flex-shrink:0}
+.order-handle{color:#cbd5e1;font-size:1rem;flex-shrink:0}
+
+/* ── CELEBRATION ── */
+.celebration{
+  background:linear-gradient(135deg,#e0f7f5,#fef9e7,#f0e9ff);
+  border-radius:var(--r3);padding:56px 32px;text-align:center;
+  border:2px solid rgba(26,107,114,0.15);box-shadow:var(--shadow-lg);
+}
+.cel-emoji{font-size:4rem;display:block;margin-bottom:20px;animation:bounce 1s infinite}
+.xp-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--gold-pale);border:2.5px solid rgba(200,146,42,0.35);
+  border-radius:99px;padding:12px 28px;
+  font-family:var(--font-ui);font-size:1.4rem;font-weight:900;color:var(--gold);
+  margin-bottom:20px;animation:popIn .5s .2s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn{from{transform:scale(0.4);opacity:0}to{transform:scale(1);opacity:1}}
+.cel-title{font-family:var(--font-ui);font-size:2rem;font-weight:900;color:var(--teal);margin-bottom:10px}
+.cel-sub{font-size:1rem;color:var(--soft);line-height:1.8;margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto}
+.badge-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.badge-item{
+  background:var(--white);border:2px solid var(--border);border-radius:var(--r2);
+  padding:14px 20px;display:flex;align-items:center;gap:10px;
+  font-family:var(--font-ui);font-size:0.85rem;color:var(--soft);
+  box-shadow:var(--shadow);
+}
+.badge-item .bi{font-size:1.5rem}
+.badge-item strong{color:var(--text);display:block;font-size:0.88rem}
+
+/* ── NAV ── */
+.step-nav{
+  position:fixed;bottom:0;right:0;left:0;
+  background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);
+  border-top:2px solid var(--border);
+  padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.06);
+}
+.btn-next{
+  font-family:var(--font-ui);font-weight:900;font-size:0.95rem;
+  color:#fff;background:linear-gradient(135deg,var(--teal),var(--teal-l));
+  padding:13px 32px;border-radius:99px;
+  box-shadow:0 4px 16px rgba(26,107,114,0.35);transition:.2s;
+}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,107,114,0.45)}
+.btn-next:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-prev{
+  font-family:var(--font-ui);font-weight:700;font-size:0.9rem;
+  color:var(--soft);background:#f1f5f9;padding:13px 22px;border-radius:99px;transition:.2s;
+}
+.btn-prev:hover{background:#e2e8f0;color:var(--text)}
+.step-dots{display:flex;gap:6px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;transition:.3s}
+.dot.active{background:var(--teal);width:24px;border-radius:99px}
+.dot.done{background:var(--green)}
+
+@media(max-width:640px){
+  .concept-grid{grid-template-columns:1fr}
+  .builder-body{grid-template-columns:1fr}
+  .palette{border-left:none;border-top:2px solid var(--border)}
+  .hero{padding:36px 20px}
+  .step-body{padding:28px 14px 110px}
+  .topbar{padding:0 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<nav class="topbar">
+  <div class="logo">فِ<span>كر</span></div>
+  <div class="topbar-center">
+    <span class="lesson-pill">🌱 درس ١</span>
+    <span class="xp-pill" id="xp">⭐ ٠ XP</span>
+  </div>
+  <button class="btn-back" onclick="window.location.href='index.html'">← رجوع</button>
+</nav>
+<div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+
+<!-- ══ STEP 1: HERO ══ -->
+<div class="step active" id="s1">
+  <div class="step-body">
+    <div class="hero">
+      <span class="hero-emoji">🧠</span>
+      <h1 class="hero-title">ما هي البرمجة؟</h1>
+      <p class="hero-sub">اكتشف كيف تتكلم مع الحاسوب — وابنِ أول خوارزمية بالبلوكات الملوّنة!</p>
+      <div class="chips">
+        <div class="chip chip-teal">⏱️ ٣٠ دقيقة</div>
+        <div class="chip chip-gold">🏅 ١٠٠ XP</div>
+        <div class="chip chip-purple">🧩 بلوكات تفاعلية</div>
+      </div>
+    </div>
+    <div class="hbox teal">
+      <h3>🎯 ماذا ستتعلم اليوم؟</h3>
+      <p>✦ ما معنى البرمجة بكلمات بسيطة<br/>✦ لماذا يحتاج الحاسوب تعليمات دقيقة<br/>✦ ما هي الخوارزمية — وكيف تبنيها بنفسك<br/>✦ تحدي بناء تسلسل خطوات بالبلوكات!</p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <div></div>
+    <div class="step-dots">
+      <div class="dot active" id="d1"></div><div class="dot" id="d2"></div>
+      <div class="dot" id="d3"></div><div class="dot" id="d4"></div>
+      <div class="dot" id="d5"></div><div class="dot" id="d6"></div>
+    </div>
+    <button class="btn-next" onclick="goStep(2)">ابدأ الدرس ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 2: WHAT IS PROGRAMMING ══ -->
+<div class="step" id="s2">
+  <div class="step-body">
+    <div class="s-tag">المفهوم الأساسي</div>
+    <h2 class="s-title">البرمجة = تعليمات للحاسوب 🤖</h2>
+    <p class="s-lead">الحاسوب لا يفكر — ينفّذ ما تقوله حرفياً! أنت المبرمج، أنت من يكتب التعليمات</p>
+
+    <div class="concept-grid">
+      <div class="concept-card teal">
+        <div class="cc-icon">👨‍💻</div>
+        <div class="cc-title">أنت = المبرمج</div>
+        <div class="cc-desc">تكتب التعليمات بدقة شديدة</div>
+      </div>
+      <div class="concept-card blue">
+        <div class="cc-icon">🤖</div>
+        <div class="cc-title">الحاسوب = المنفّذ</div>
+        <div class="cc-desc">ينفّذ حرفياً — لا يخمّن!</div>
+      </div>
+      <div class="concept-card purple">
+        <div class="cc-icon">📝</div>
+        <div class="cc-title">الكود = التعليمات</div>
+        <div class="cc-desc">اللغة التي تفهمها الآلة</div>
+      </div>
+      <div class="concept-card gold">
+        <div class="cc-icon">✨</div>
+        <div class="cc-title">البرنامج = النتيجة</div>
+        <div class="cc-desc">ما يراه الناس ويستخدمونه</div>
+      </div>
+    </div>
+
+    <div class="hbox gold">
+      <h3>💡 البرمجة بكلمة واحدة</h3>
+      <p>البرمجة هي <strong>إعطاء تعليمات دقيقة ومرتّبة للحاسوب</strong> لحل مشكلة — مثل وصفة الطبخ بالضبط، خطوة بخطوة!</p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(1)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done" id="d1b"></div><div class="dot active"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" onclick="goStep(3)">فهمت! ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 3: BLOCK BUILDER ══ -->
+<div class="step" id="s3">
+  <div class="step-body">
+    <div class="s-tag">بنِ بالبلوكات 🧩</div>
+    <h2 class="s-title">رتّب خطوات صنع الشاي!</h2>
+    <p class="s-lead">اسحب البلوكات من اليمين وضعها في المنطقة الزرقاء بالترتيب الصحيح — ثم اضغط <strong>شغّل</strong> لترى النتيجة!</p>
+
+    <div class="builder-wrap">
+      <div class="builder-header">
+        <div>
+          <div class="builder-title">🧩 بانٍ الخوارزمية</div>
+          <div class="builder-subtitle">اسحب البلوكات وابنِ تسلسل الخطوات</div>
+        </div>
+      </div>
+      <div class="builder-body">
+        <!-- Drop Zone -->
+        <div class="dropzone" id="dropzone"
+          ondragover="event.preventDefault();this.querySelector('.drop-placeholder')?.classList.add('dragover')"
+          ondragleave="this.querySelector('.drop-placeholder')?.classList.remove('dragover')"
+          ondrop="dropBlock(event)">
+          <div class="dropzone-label">🔧 برنامجي</div>
+          <div id="placed-blocks"></div>
+          <div class="drop-placeholder" id="placeholder">اسحب البلوكات هنا...</div>
+        </div>
+        <!-- Palette -->
+        <div class="palette">
+          <div class="palette-label">📦 البلوكات المتاحة</div>
+          <div class="block-source bs-ev" draggable="true" id="b-boil" data-id="boil" data-label="اغلِ الماء 🔥" data-cls="bp-ev" ondragstart="dragStart(event)">🔥 اغلِ الماء</div>
+          <div class="block-source bs-mo" draggable="true" id="b-bag" data-id="bag" data-label="ضع كيس الشاي ☕" data-cls="bp-mo" ondragstart="dragStart(event)">☕ ضع كيس الشاي</div>
+          <div class="block-source bs-lo" draggable="true" id="b-pour" data-id="pour" data-label="اسكب الماء الساخن 💧" data-cls="bp-lo" ondragstart="dragStart(event)">💧 اسكب الماء</div>
+          <div class="block-source bs-co" draggable="true" id="b-wait" data-id="wait" data-label="انتظر ٣ دقائق ⏱️" data-cls="bp-co" ondragstart="dragStart(event)">⏱️ انتظر ٣ دقائق</div>
+          <div class="block-source bs-gr" draggable="true" id="b-drink" data-id="drink" data-label="اشرب واستمتع 😊" data-cls="bp-gr" ondragstart="dragStart(event)">😊 اشرب واستمتع</div>
+        </div>
+      </div>
+      <div class="run-area">
+        <button class="btn-run" onclick="runProgram()">▶ شغّل البرنامج</button>
+        <button class="btn-clear" onclick="clearBlocks()">🗑️ مسح</button>
+        <div class="run-output" id="run-output">انتظر تشغيل البرنامج...</div>
+      </div>
+    </div>
+
+    <div class="hbox teal" style="margin-top:16px">
+      <h3>💡 هذا يُسمّى خوارزمية!</h3>
+      <p>ما بنيته للتو هو <strong>خوارزمية (Algorithm)</strong> — سلسلة خطوات منظّمة لحل مشكلة. كل البرامج في العالم مبنية على خوارزميات!</p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(2)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div>
+      <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" id="s3-next" onclick="goStep(4)" disabled>التالي ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 4: QUIZ ══ -->
+<div class="step" id="s4">
+  <div class="step-body">
+    <div class="s-tag">اختبر نفسك 🎯</div>
+    <h2 class="s-title">سؤال واحد مهم!</h2>
+    <p class="s-lead">فكّر جيداً — ما أهم خاصية في الخوارزمية؟</p>
+
+    <div class="card">
+      <div class="quiz-q">لو قلت للحاسوب: "اشرب الشاي ثم اغلِ الماء" — ماذا سيحدث؟</div>
+      <div class="quiz-opts" id="q1">
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1-fb','s4-next')">سيصنع الشاي بشكل صحيح 🍵</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',true,'q1-fb','s4-next')">سيحدث خطأ لأن الترتيب خاطئ ❌</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1-fb','s4-next')">لن يفعل شيئاً 😴</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1-fb','s4-next')">سيسأل عن المساعدة 🙋</button>
+      </div>
+      <div class="quiz-fb" id="q1-fb"></div>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(3)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div>
+      <div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" id="s4-next" onclick="goStep(5)" disabled>التالي ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 5: ORDER CHALLENGE ══ -->
+<div class="step" id="s5">
+  <div class="step-body">
+    <div class="s-tag">تحدي الترتيب 🏆</div>
+    <h2 class="s-title">رتّب خطوات الوضوء!</h2>
+    <p class="s-lead">اسحب الخطوات وضعها بالترتيب الصحيح — هذا تماماً كيف يفكر المبرمج! 💪</p>
+
+    <div class="order-list" id="order-list">
+      <div class="order-item" draggable="true" data-correct="4" ondragstart="dragItem(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropItem(event,this)">
+        <span class="order-handle">⠿</span><span class="order-num">?</span><span class="order-emoji">💧</span><span>غسل اليدين ثلاث مرات</span>
+      </div>
+      <div class="order-item" draggable="true" data-correct="1" ondragstart="dragItem(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropItem(event,this)">
+        <span class="order-handle">⠿</span><span class="order-num">?</span><span class="order-emoji">🤲</span><span>النية في القلب</span>
+      </div>
+      <div class="order-item" draggable="true" data-correct="6" ondragstart="dragItem(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropItem(event,this)">
+        <span class="order-handle">⠿</span><span class="order-num">?</span><span class="order-emoji">👂</span><span>مسح الأذنين</span>
+      </div>
+      <div class="order-item" draggable="true" data-correct="2" ondragstart="dragItem(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropItem(event,this)">
+        <span class="order-handle">⠿</span><span class="order-num">?</span><span class="order-emoji">🌊</span><span>البسملة والبدء</span>
+      </div>
+      <div class="order-item" draggable="true" data-correct="5" ondragstart="dragItem(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropItem(event,this)">
+        <span class="order-handle">⠿</span><span class="order-num">?</span><span class="order-emoji">👃</span><span>المضمضة والاستنشاق</span>
+      </div>
+      <div class="order-item" draggable="true" data-correct="3" ondragstart="dragItem(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropItem(event,this)">
+        <span class="order-handle">⠿</span><span class="order-num">?</span><span class="order-emoji">😊</span><span>غسل الوجه ثلاث مرات</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn-run" onclick="checkOrder()">✓ تحقق من الترتيب</button>
+      <button class="btn-clear" onclick="shuffleOrder()">🔀 خلط جديد</button>
+    </div>
+    <div class="quiz-fb" id="order-fb" style="margin-top:12px"></div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(4)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div>
+      <div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" id="s5-next" onclick="goStep(6)" disabled>اكتملت! ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 6: CELEBRATION ══ -->
+<div class="step" id="s6">
+  <div class="step-body">
+    <div class="celebration">
+      <span class="cel-emoji">🎉</span>
+      <div class="xp-badge">🏅 +١٠٠ XP</div>
+      <h2 class="cel-title">أحسنت يا بطل!</h2>
+      <p class="cel-sub">أكملت الدرس الأول — الآن تعرف البرمجة والخوارزمية وكيف تبني تسلسل خطوات!<br/><strong>الدرس الثاني ينتظرك — ستبني أول لعبة!</strong></p>
+      <div class="badge-row">
+        <div class="badge-item"><span class="bi">🌱</span><div><strong>المبادر</strong>أول درس مكتمل</div></div>
+        <div class="badge-item"><span class="bi">🧩</span><div><strong>بانٍ البلوكات</strong>بنيت أول خوارزمية</div></div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-next" onclick="finish()" style="padding:15px 40px;font-size:1rem">✅ احفظ تقدمي</button>
+        <button class="btn-prev" onclick="goStep(1)" style="padding:15px 24px">🔁 أعد الدرس</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── AUTH GUARD — redirect to login if not signed in ──
+(async () => {
+  try {
+    const { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    const cfg = {apiKey:"AIzaSyBeD4ng-pNWSLgkrNmK1Re8FYnmCNCMBU8",authDomain:"fikr-app-fbdf7.firebaseapp.com",projectId:"fikr-app-fbdf7",storageBucket:"fikr-app-fbdf7.firebasestorage.app",messagingSenderId:"378212535527",appId:"1:378212535527:web:99331970433b4428dd2642"};
+    const app  = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const auth = getAuth(app);
+    await new Promise(resolve => {
+      const unsub = onAuthStateChanged(auth, u => { unsub(); resolve(u); });
+    }).then(user => {
+      if (!user) window.location.href = "index.html";
+    });
+  } catch(e) {}
+})();
+let step=1, xp=0;
+const TOTAL=6;
+let dragSrcItem=null, dragSrcBlock=null;
+const correctOrder=['boil','bag','pour','wait','drink'];
+const placed=[];
+
+// ── NAVIGATION ──
+function goStep(n){
+  document.getElementById('s'+step).classList.remove('active');
+  step=n;
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('prog').style.width=((n-1)/(TOTAL-1)*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── XP ──
+function addXP(a){
+  xp+=a;
+  const el=document.getElementById('xp');
+  el.textContent='⭐ '+xp+' XP';
+  el.style.transform='scale(1.4)';
+  setTimeout(()=>el.style.transform='',300);
+}
+
+// ── BLOCK BUILDER ──
+function dragStart(e){
+  dragSrcBlock=e.currentTarget;
+  e.dataTransfer.setData('blockId', e.currentTarget.dataset.id);
+  e.dataTransfer.setData('blockLabel', e.currentTarget.dataset.label);
+  e.dataTransfer.setData('blockCls', e.currentTarget.dataset.cls);
+}
+
+function dropBlock(e){
+  e.preventDefault();
+  document.getElementById('placeholder')?.classList.remove('dragover');
+  const id=e.dataTransfer.getData('blockId');
+  const label=e.dataTransfer.getData('blockLabel');
+  const cls=e.dataTransfer.getData('blockCls');
+  if(!id) return;
+  // Check not already placed
+  if(placed.includes(id)) return;
+  placed.push(id);
+
+  // Mark source as used
+  const src=document.getElementById('b-'+id);
+  if(src) src.classList.add('used');
+
+  // Hide placeholder
+  const ph=document.getElementById('placeholder');
+  if(ph) ph.style.display='none';
+
+  // Add block to placed area
+  const wrap=document.getElementById('placed-blocks');
+  const div=document.createElement('div');
+  div.className='block-placed '+cls;
+  div.dataset.id=id;
+  div.innerHTML=`<span style="font-size:1rem">📌</span><span style="flex:1">${label}</span><button class="remove-btn" onclick="removeBlock('${id}')">✕</button>`;
+  wrap.appendChild(div);
+
+  addXP(5);
+  checkBuildCorrect();
+}
+
+function removeBlock(id){
+  placed.splice(placed.indexOf(id),1);
+  const src=document.getElementById('b-'+id);
+  if(src) src.classList.remove('used');
+  const el=document.querySelector(`[data-id="${id}"].block-placed`);
+  if(el) el.remove();
+  if(placed.length===0){
+    const ph=document.getElementById('placeholder');
+    if(ph) ph.style.display='';
+  }
+  document.getElementById('run-output').className='run-output';
+  document.getElementById('run-output').textContent='انتظر تشغيل البرنامج...';
+}
+
+function clearBlocks(){
+  placed.length=0;
+  document.getElementById('placed-blocks').innerHTML='';
+  document.getElementById('placeholder').style.display='';
+  document.querySelectorAll('.block-source').forEach(b=>b.classList.remove('used'));
+  document.getElementById('run-output').className='run-output';
+  document.getElementById('run-output').textContent='انتظر تشغيل البرنامج...';
+}
+
+function runProgram(){
+  const out=document.getElementById('run-output');
+  if(placed.length===0){
+    out.className='run-output error';
+    out.textContent='⚠️ لم تضع أي بلوكات بعد!';
+    return;
+  }
+  // Check if correct order
+  const isCorrect=placed.join(',')===correctOrder.join(',');
+  if(isCorrect){
+    out.className='run-output success';
+    out.textContent='✅ ممتاز! البرنامج يعمل بشكل مثالي — الشاي جاهز! ☕🎉';
+    addXP(30);
+    document.getElementById('s3-next').disabled=false;
+  } else if(placed.length===correctOrder.length){
+    out.className='run-output error';
+    out.textContent='❌ الترتيب غير صحيح! حاول مجدداً — تذكّر: اغلِ الماء أولاً!';
+  } else {
+    out.className='run-output error';
+    out.textContent=`⚠️ لديك ${placed.length} بلوكات، تحتاج ${correctOrder.length} — أضف الباقي!`;
+  }
+}
+
+function checkBuildCorrect(){
+  if(placed.length===correctOrder.length && placed.join(',')===correctOrder.join(',')){
+    document.getElementById('s3-next').disabled=false;
+  }
+}
+
+// ── QUIZ ──
+function quiz(btn,qid,correct,fbId,nextId){
+  document.querySelectorAll('#'+qid+' .quiz-opt').forEach(o=>o.disabled=true);
+  const fb=document.getElementById(fbId);
+  if(correct){
+    btn.classList.add('correct');
+    fb.innerHTML='✅ <strong>صحيح تماماً!</strong> الحاسوب ينفّذ الأوامر حرفياً — لو الترتيب خاطئ، النتيجة خاطئة!';
+    fb.className='quiz-fb show ok';
+    addXP(30);
+    if(nextId) document.getElementById(nextId).disabled=false;
+  } else {
+    btn.classList.add('wrong');
+    fb.innerHTML='❌ ليس هذا! تذكّر: الحاسوب لا يفكر — ينفّذ ما تقوله بالضبط!';
+    fb.className='quiz-fb show no';
+    setTimeout(()=>{
+      document.querySelectorAll('#'+qid+' .quiz-opt').forEach(o=>o.disabled=false);
+      btn.classList.remove('wrong'); fb.className='quiz-fb';
+    },1400);
+  }
+}
+
+// ── ORDER DRAG ──
+function dragItem(e){ dragSrcItem=e.currentTarget; setTimeout(()=>e.currentTarget.classList.add('dragging'),0); }
+
+document.addEventListener('dragend', ()=>{
+  document.querySelectorAll('.order-item').forEach(i=>{ i.classList.remove('dragging','drag-over'); });
+});
+
+function dropItem(e,target){
+  e.preventDefault();
+  target.classList.remove('drag-over');
+  if(!dragSrcItem || dragSrcItem===target) return;
+  const list=document.getElementById('order-list');
+  const items=[...list.children];
+  const si=items.indexOf(dragSrcItem), ti=items.indexOf(target);
+  if(si<ti) list.insertBefore(dragSrcItem,target.nextSibling);
+  else list.insertBefore(dragSrcItem,target);
+  updateOrderNums();
+}
+
+// Touch support for order
+let touchSrcItem=null;
+document.addEventListener('touchstart',e=>{
+  const t=e.target.closest('.order-item');
+  if(t){ touchSrcItem=t; t.classList.add('dragging'); }
+},{passive:true});
+document.addEventListener('touchmove',e=>{
+  if(!touchSrcItem) return;
+  e.preventDefault();
+  const touch=e.touches[0];
+  const els=document.elementsFromPoint(touch.clientX,touch.clientY);
+  const target=els.find(el=>el.classList.contains('order-item')&&el!==touchSrcItem);
+  document.querySelectorAll('.order-item').forEach(i=>i.classList.remove('drag-over'));
+  if(target) target.classList.add('drag-over');
+},{passive:false});
+document.addEventListener('touchend',e=>{
+  if(!touchSrcItem) return;
+  const touch=e.changedTouches[0];
+  const els=document.elementsFromPoint(touch.clientX,touch.clientY);
+  const target=els.find(el=>el.classList.contains('order-item')&&el!==touchSrcItem);
+  if(target){
+    const list=document.getElementById('order-list');
+    const items=[...list.children];
+    const si=items.indexOf(touchSrcItem),ti=items.indexOf(target);
+    if(si<ti) list.insertBefore(touchSrcItem,target.nextSibling);
+    else list.insertBefore(touchSrcItem,target);
+    updateOrderNums();
+  }
+  document.querySelectorAll('.order-item').forEach(i=>i.classList.remove('dragging','drag-over'));
+  touchSrcItem=null;
+});
+
+function updateOrderNums(){
+  document.querySelectorAll('#order-list .order-item').forEach((item,i)=>{
+    item.querySelector('.order-num').textContent=i+1;
+    item.classList.remove('correct-pos');
+  });
+  document.getElementById('order-fb').className='quiz-fb';
+  document.getElementById('s5-next').disabled=true;
+}
+
+function checkOrder(){
+  const items=document.querySelectorAll('#order-list .order-item');
+  let c=0;
+  items.forEach((item,i)=>{ if(i+1===parseInt(item.dataset.correct)){item.classList.add('correct-pos');c++;}else item.classList.remove('correct-pos'); });
+  const fb=document.getElementById('order-fb');
+  if(c===items.length){
+    fb.innerHTML='🎉 <strong>مثالي تماماً!</strong> رتّبت خطوات الوضوء بالترتيب الصحيح — هكذا تعمل الخوارزمية!';
+    fb.className='quiz-fb show ok';
+    addXP(30);
+    document.getElementById('s5-next').disabled=false;
+  } else {
+    fb.innerHTML=`🔄 ${c} من ${items.length} صحيحة — حاول مجدداً! تذكّر: النية أولاً ثم البسملة`;
+    fb.className='quiz-fb show no';
+  }
+}
+
+function shuffleOrder(){
+  const list=document.getElementById('order-list');
+  const items=[...list.children];
+  for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));list.appendChild(items[j]);items.splice(j,1);}
+  updateOrderNums();
+}
+
+// ── FINISH ──
+async function finish(){
+  const btn = document.querySelector('.celebration .btn-next');
+  if(btn){ btn.disabled=true; btn.textContent='جارٍ الحفظ... ⏳'; }
+  try {
+    const { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    const { getFirestore, doc, getDoc, updateDoc, arrayUnion } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const cfg = {apiKey:"AIzaSyBeD4ng-pNWSLgkrNmK1Re8FYnmCNCMBU8",authDomain:"fikr-app-fbdf7.firebaseapp.com",projectId:"fikr-app-fbdf7",storageBucket:"fikr-app-fbdf7.firebasestorage.app",messagingSenderId:"378212535527",appId:"1:378212535527:web:99331970433b4428dd2642"};
+    const app  = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    // Wait for Firebase to restore session from localStorage — currentUser is null until this fires
+    const user = await new Promise(resolve => {
+      const unsub = onAuthStateChanged(auth, u => { unsub(); resolve(u); });
+    });
+    if(user){
+      const snap = await getDoc(doc(db,'users',user.uid));
+      const curXP = snap.data()?.xp || 0;
+      await updateDoc(doc(db,'users',user.uid),{ lessonsCompleted: arrayUnion('lesson1'), xp: curXP + 100 });
+    }
+    if(btn){ btn.textContent='✅ تم الحفظ! جارٍ العودة...'; }
+    setTimeout(()=>{ window.location.href='index.html'; },1000);
+  } catch(e){
+    window.location.href='index.html';
+  }
+}
+
+// Init order nums
+updateOrderNums();
+</script>
+</body>
+</html>
