@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>فِكر · م١ — Python بالعربية</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;700;900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#c8922a;--gold-l:#e8b84b;--gold-pale:#fff8e6;--gold-dark:#92670f;
+  --teal:#1a6b72;--teal-pale:#e0f5f7;
+  --green:#16a34a;--green-pale:#dcfce7;
+  --red:#dc2626;--red-pale:#fee2e2;
+  --blue:#2563eb;--blue-pale:#dbeafe;
+  --purple:#7c3aed;--purple-pale:#ede9fe;
+  --orange:#ea580c;--orange-pale:#ffedd5;
+  --bg:#fffdf5;--white:#fff;--text:#1a1d26;--soft:#64748b;--border:#e8dfc8;
+  --font:'Tajawal',sans-serif;--font-ui:'Cairo',sans-serif;--font-code:'Fira Code',monospace;
+  --r:16px;--r2:24px;--r3:36px;
+  --shadow:0 4px 20px rgba(0,0,0,0.08);--shadow-lg:0 8px 40px rgba(0,0,0,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+button{cursor:pointer;border:none;font-family:inherit}
+
+.topbar{background:var(--white);border-bottom:2px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.logo{font-family:var(--font-ui);font-size:1.5rem;font-weight:900;color:var(--teal)}
+.logo span{color:var(--gold)}
+.lesson-pill{background:var(--gold-pale);color:var(--gold-dark);font-family:var(--font-ui);font-size:0.78rem;font-weight:700;padding:5px 14px;border-radius:99px;border:1.5px solid rgba(200,146,42,0.3)}
+.xp-pill{background:var(--gold-pale);color:var(--gold);font-family:var(--font-ui);font-size:0.82rem;font-weight:800;padding:5px 14px;border-radius:99px;border:1.5px solid rgba(200,146,42,0.2);transition:.3s}
+.btn-back{font-family:var(--font-ui);font-size:0.82rem;font-weight:700;color:var(--soft);background:var(--border);padding:8px 18px;border-radius:99px;transition:.2s}
+.btn-back:hover{background:#d4c9a8;color:var(--text)}
+
+.prog-wrap{height:6px;background:#ede8d5}
+.prog-fill{height:6px;background:linear-gradient(90deg,var(--gold),var(--gold-l));transition:width .5s cubic-bezier(.4,0,.2,1);border-radius:0 99px 99px 0}
+
+.step{display:none;animation:fadeUp .4s ease both}
+.step.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.step-body{max-width:780px;margin:0 auto;padding:40px 20px 120px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#fff8e6 0%,#fef3c7 50%,#fff8e6 100%);border-radius:var(--r3);padding:52px 40px;text-align:center;border:2px solid rgba(200,146,42,0.2);box-shadow:var(--shadow);margin-bottom:24px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(200,146,42,0.1),transparent 70%)}
+.hero-emoji{font-size:4rem;margin-bottom:16px;display:block;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero-title{font-family:var(--font-ui);font-size:2rem;font-weight:900;color:var(--gold-dark);margin-bottom:10px}
+.hero-sub{font-size:1rem;color:var(--soft);line-height:1.8;max-width:480px;margin:0 auto 28px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chip{display:flex;align-items:center;gap:6px;font-family:var(--font-ui);font-size:0.82rem;font-weight:700;padding:7px 16px;border-radius:99px;border:2px solid}
+.chip-gold{background:var(--gold-pale);color:var(--gold-dark);border-color:rgba(200,146,42,0.25)}
+.chip-green{background:var(--green-pale);color:var(--green);border-color:rgba(22,163,74,0.2)}
+.chip-blue{background:var(--blue-pale);color:var(--blue);border-color:rgba(37,99,235,0.2)}
+
+.s-tag{font-family:var(--font-ui);font-size:0.72rem;font-weight:700;color:var(--gold-dark);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.s-title{font-family:var(--font-ui);font-size:1.6rem;font-weight:900;color:var(--text);margin-bottom:8px;line-height:1.3}
+.s-lead{font-size:0.97rem;color:var(--soft);line-height:1.8;margin-bottom:28px}
+
+.hbox{border-radius:var(--r2);padding:24px 28px;margin:20px 0;border-right:5px solid}
+.hbox.gold{background:var(--gold-pale);border-color:var(--gold)}
+.hbox.green{background:var(--green-pale);border-color:var(--green)}
+.hbox.blue{background:var(--blue-pale);border-color:var(--blue)}
+.hbox.teal{background:var(--teal-pale);border-color:var(--teal)}
+.hbox h3{font-family:var(--font-ui);font-size:0.95rem;font-weight:800;margin-bottom:8px}
+.hbox.gold h3{color:var(--gold-dark)}
+.hbox.green h3{color:var(--green)}
+.hbox.blue h3{color:var(--blue)}
+.hbox.teal h3{color:var(--teal)}
+.hbox p{font-size:0.92rem;color:var(--soft);line-height:1.85}
+.hbox strong{color:var(--text)}
+
+/* CODE EDITOR */
+.code-editor{background:#1e1e2e;border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow-lg);margin:20px 0;border:2px solid rgba(200,146,42,0.2)}
+.editor-bar{background:#2a2a3e;padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.ed-dot{width:10px;height:10px;border-radius:50%}
+.editor-bar span{font-family:var(--font-ui);font-size:0.78rem;color:rgba(255,255,255,0.35);margin-right:auto}
+.editor-bar .run-btn{font-family:var(--font-ui);font-size:0.78rem;font-weight:700;background:var(--green);color:#fff;padding:5px 14px;border-radius:8px;border:none;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:5px}
+.editor-bar .run-btn:hover{background:#15803d;transform:translateY(-1px)}
+.code-area{padding:20px 24px;font-family:var(--font-code);font-size:0.88rem;line-height:1.9;position:relative}
+.code-line{display:flex;gap:16px;align-items:flex-start}
+.ln{color:rgba(255,255,255,0.18);min-width:20px;text-align:left;user-select:none;flex-shrink:0;font-size:0.78rem;padding-top:2px}
+.code-text{flex:1}
+/* Python syntax colors */
+.kw{color:#c084fc}  /* keywords */
+.fn{color:#86efac}  /* functions */
+.st{color:#fde68a}  /* strings */
+.cm{color:#6272a4}  /* comments */
+.nm{color:#93c5fd}  /* numbers */
+.vr{color:#f9a8d4}  /* variables */
+.output-area{background:#0f1117;border-top:1px solid rgba(255,255,255,0.06);padding:14px 24px}
+.output-label{font-family:var(--font-ui);font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.output-text{font-family:var(--font-code);font-size:0.88rem;color:#86efac;min-height:24px;transition:.3s}
+
+/* INTERACTIVE CODE FILL */
+.code-fill-wrap{background:#1e1e2e;border-radius:var(--r2);overflow:hidden;margin:20px 0;border:2px solid rgba(200,146,42,0.2);box-shadow:var(--shadow)}
+.code-fill-bar{background:#2a2a3e;padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.code-fill-bar span{font-family:var(--font-ui);font-size:0.78rem;color:rgba(255,255,255,0.35);margin-right:auto}
+.code-fill-body{padding:20px 24px;font-family:var(--font-code);font-size:0.88rem;line-height:2.2}
+.code-blank{display:inline-block;background:rgba(200,146,42,0.15);border:1.5px dashed rgba(200,146,42,0.5);border-radius:6px;min-width:80px;padding:1px 8px;font-family:var(--font-code);font-size:0.85rem;color:#fde68a;outline:none;transition:.2s;text-align:center}
+.code-blank:focus{background:rgba(200,146,42,0.25);border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,146,42,0.15)}
+.code-blank.correct{background:rgba(22,163,74,0.15);border-color:var(--green);color:#86efac}
+.code-blank.wrong{background:rgba(220,38,38,0.12);border-color:var(--red);animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.check-btn{font-family:var(--font-ui);font-weight:800;font-size:0.88rem;color:#fff;background:linear-gradient(135deg,var(--gold),var(--gold-dark));padding:10px 24px;border-radius:99px;margin:14px 24px;transition:.2s;box-shadow:0 4px 14px rgba(200,146,42,0.3)}
+.check-btn:hover{transform:translateY(-2px)}
+.fill-fb{margin:0 24px 16px;border-radius:var(--r);padding:12px 16px;font-family:var(--font-ui);font-size:0.88rem;font-weight:600;border:2px solid;display:none;line-height:1.7}
+.fill-fb.show{display:block;animation:fadeUp .3s ease}
+.fill-fb.ok{background:var(--green-pale);border-color:rgba(22,163,74,0.3);color:var(--green)}
+.fill-fb.no{background:var(--red-pale);border-color:rgba(220,38,38,0.25);color:var(--red)}
+
+/* CONCEPT CARDS */
+.concept-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:20px 0}
+.cc{border-radius:var(--r2);padding:20px;text-align:center;border:2px solid;transition:.3s;cursor:default}
+.cc:hover{transform:scale(1.04) translateY(-3px);box-shadow:var(--shadow-lg)}
+.cc-icon{font-size:2.4rem;margin-bottom:10px}
+.cc-title{font-family:var(--font-ui);font-weight:800;font-size:0.92rem;color:var(--text);margin-bottom:4px}
+.cc-code{font-family:var(--font-code);font-size:0.78rem;background:rgba(0,0,0,0.06);padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:4px}
+.cc-desc{font-size:0.78rem;color:var(--soft);line-height:1.5}
+.cc.gold{background:var(--gold-pale);border-color:rgba(200,146,42,0.25)}
+.cc.blue{background:var(--blue-pale);border-color:rgba(37,99,235,0.2)}
+.cc.green{background:var(--green-pale);border-color:rgba(22,163,74,0.2)}
+.cc.purple{background:var(--purple-pale);border-color:rgba(124,58,237,0.2)}
+
+/* QUIZ */
+.quiz-q{font-family:var(--font-ui);font-size:1.05rem;font-weight:800;color:var(--text);margin-bottom:18px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.quiz-opt{background:var(--white);border:2.5px solid var(--border);border-radius:var(--r);padding:14px 20px;font-family:var(--font-ui);font-size:0.92rem;font-weight:600;color:var(--soft);text-align:right;transition:.2s}
+.quiz-opt:hover{border-color:var(--gold);background:var(--gold-pale);color:var(--gold-dark)}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-pale);color:var(--green)}
+.quiz-opt.wrong{border-color:var(--red);background:var(--red-pale);color:var(--red);animation:shake .4s ease}
+.quiz-fb{border-radius:var(--r);padding:14px 18px;font-family:var(--font-ui);font-size:0.9rem;display:none;margin-bottom:16px;line-height:1.7;border:2px solid;font-weight:600}
+.quiz-fb.show{display:block;animation:fadeUp .3s ease}
+.quiz-fb.ok{background:var(--green-pale);border-color:rgba(22,163,74,0.3);color:var(--green)}
+.quiz-fb.no{background:var(--red-pale);border-color:rgba(220,38,38,0.25);color:var(--red)}
+
+/* CELEBRATION */
+.celebration{background:linear-gradient(135deg,#fff8e6,#fef3c7,#fff8e6);border-radius:var(--r3);padding:56px 32px;text-align:center;border:2px solid rgba(200,146,42,0.2);box-shadow:var(--shadow-lg)}
+.cel-emoji{font-size:4rem;display:block;margin-bottom:20px;animation:bounce 1s infinite}
+.xp-badge{display:inline-flex;align-items:center;gap:10px;background:var(--gold-pale);border:2.5px solid rgba(200,146,42,0.4);border-radius:99px;padding:12px 28px;font-family:var(--font-ui);font-size:1.4rem;font-weight:900;color:var(--gold-dark);margin-bottom:20px;animation:popIn .5s .2s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes popIn{from{transform:scale(0.4);opacity:0}to{transform:scale(1);opacity:1}}
+.cel-title{font-family:var(--font-ui);font-size:2rem;font-weight:900;color:var(--gold-dark);margin-bottom:10px}
+.cel-sub{font-size:1rem;color:var(--soft);line-height:1.8;margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto}
+.badge-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.badge-item{background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:14px 20px;display:flex;align-items:center;gap:10px;font-family:var(--font-ui);font-size:0.85rem;color:var(--soft);box-shadow:var(--shadow)}
+.badge-item .bi{font-size:1.5rem}
+.badge-item strong{color:var(--text);display:block;font-size:0.88rem}
+
+/* NAV */
+.step-nav{position:fixed;bottom:0;right:0;left:0;background:rgba(255,253,245,0.95);backdrop-filter:blur(16px);border-top:2px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,0.06)}
+.btn-next{font-family:var(--font-ui);font-weight:900;font-size:0.95rem;color:#fff;background:linear-gradient(135deg,var(--gold),var(--gold-dark));padding:13px 32px;border-radius:99px;box-shadow:0 4px 16px rgba(200,146,42,0.4);transition:.2s}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,146,42,0.5)}
+.btn-next:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-prev{font-family:var(--font-ui);font-weight:700;font-size:0.9rem;color:var(--soft);background:#f1f5f9;padding:13px 22px;border-radius:99px;transition:.2s}
+.btn-prev:hover{background:#e2e8f0;color:var(--text)}
+.step-dots{display:flex;gap:6px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:#e8dfc8;transition:.3s}
+.dot.active{background:var(--gold);width:24px;border-radius:99px}
+.dot.done{background:var(--green)}
+
+@media(max-width:640px){
+  .concept-grid{grid-template-columns:1fr 1fr}
+  .step-body{padding:28px 14px 110px}
+  .topbar{padding:0 14px}
+  .hero{padding:36px 20px}
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="logo">فِ<span>كر</span></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="lesson-pill">⚡ م١ — المتوسط</span>
+    <span class="xp-pill" id="xp">⭐ ٠ XP</span>
+  </div>
+  <button class="btn-back" onclick="window.location.href='index.html'">← رجوع</button>
+</nav>
+<div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+
+<!-- ══ STEP 1: HERO ══ -->
+<div class="step active" id="s1">
+  <div class="step-body">
+    <div class="hero">
+      <span class="hero-emoji">🐍</span>
+      <h1 class="hero-title">Python بالعربية!</h1>
+      <p class="hero-sub">انتقلت من البلوكات المرئية إلى الكود الحقيقي — Python أكثر لغات البرمجة استخداماً في العالم!</p>
+      <div class="chips">
+        <div class="chip chip-gold">⏱️ ٤٠ دقيقة</div>
+        <div class="chip chip-green">🏅 ١٢٠ XP</div>
+        <div class="chip chip-blue">🐍 Python حقيقي</div>
+      </div>
+    </div>
+    <div class="hbox gold">
+      <h3>🎯 ماذا ستتعلم اليوم؟</h3>
+      <p>✦ لماذا Python وكيف تعمل<br/>✦ أول أمر: print() — اجعل الحاسوب يتكلم<br/>✦ المتغيّرات — كيف يتذكر البرنامج الأشياء<br/>✦ كتابة برنامج ترحيب بنفسك!</p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <div></div>
+    <div class="step-dots">
+      <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" onclick="goStep(2)">ابدأ الدرس ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 2: WHY PYTHON ══ -->
+<div class="step" id="s2">
+  <div class="step-body">
+    <div class="s-tag">لماذا Python؟</div>
+    <h2 class="s-title">من البلوكات إلى الكود الحقيقي 🐍</h2>
+    <p class="s-lead">في Scratch كنت تسحب بلوكات — الآن ستكتب تعليمات مباشرة. Python هي أبسط لغة برمجة حقيقية في العالم!</p>
+
+    <div class="concept-grid">
+      <div class="cc gold">
+        <div class="cc-icon">🌍</div>
+        <div class="cc-title">الأكثر استخداماً</div>
+        <div class="cc-desc">تستخدمها Google, NASA, Instagram</div>
+      </div>
+      <div class="cc blue">
+        <div class="cc-icon">📖</div>
+        <div class="cc-title">أبسط لغة</div>
+        <div class="cc-desc">تقرأ مثل الإنجليزية — سهلة للمبتدئين</div>
+      </div>
+      <div class="cc green">
+        <div class="cc-icon">🤖</div>
+        <div class="cc-title">الذكاء الاصطناعي</div>
+        <div class="cc-desc">معظم نماذج AI مبنية بـ Python</div>
+      </div>
+      <div class="cc purple">
+        <div class="cc-icon">🎮</div>
+        <div class="cc-title">ألعاب ومواقع</div>
+        <div class="cc-desc">يمكنك بناء أي شيء تخيله</div>
+      </div>
+    </div>
+
+    <div class="hbox teal">
+      <h3>💡 Scratch مقابل Python</h3>
+      <p>في Scratch كتبت: <strong>🟣 قل "أهلاً"</strong><br/>في Python تكتب: <strong style="font-family:var(--font-code);background:#f1f5f9;padding:2px 8px;border-radius:4px">print("أهلاً")</strong><br/>نفس الفكرة — لكن بكلمات حقيقية!</p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(1)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot active"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" onclick="goStep(3)">فهمت! ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 3: PRINT ══ -->
+<div class="step" id="s3">
+  <div class="step-body">
+    <div class="s-tag">أول أمر في Python</div>
+    <h2 class="s-title">print() — اجعل الحاسوب يتكلم! 🗣️</h2>
+    <p class="s-lead">أول شيء يتعلمه كل مبرمج في العالم — كيف تطبع نصاً على الشاشة. شاهد الكود وانقر شغّل!</p>
+
+    <div class="code-editor">
+      <div class="editor-bar">
+        <div class="ed-dot" style="background:#ff5f57"></div>
+        <div class="ed-dot" style="background:#febc2e"></div>
+        <div class="ed-dot" style="background:#28c840"></div>
+        <span>main.py</span>
+        <button class="run-btn" onclick="runPrint()">▶ شغّل</button>
+      </div>
+      <div class="code-area">
+        <div class="code-line"><span class="ln">1</span><span class="code-text"><span class="cm"># أول برنامج Python</span></span></div>
+        <div class="code-line"><span class="ln">2</span><span class="code-text"><span class="fn">print</span>(<span class="st">"مرحباً يا عالم!"</span>)</span></div>
+        <div class="code-line"><span class="ln">3</span><span class="code-text"><span class="fn">print</span>(<span class="st">"أنا أتعلم Python"</span>)</span></div>
+        <div class="code-line"><span class="ln">4</span><span class="code-text"><span class="fn">print</span>(<span class="st">"بالعربية 🎉"</span>)</span></div>
+      </div>
+      <div class="output-area">
+        <div class="output-label">الناتج</div>
+        <div class="output-text" id="out-print">اضغط شغّل لرؤية الناتج...</div>
+      </div>
+    </div>
+
+    <div class="hbox gold">
+      <h3>💡 قاعدة print()</h3>
+      <p>كل ما بين علامتي الاقتباس <strong>"  "</strong> يظهر على الشاشة.<br/>جرّب: غيّر النص واضغط شغّل مجدداً!</p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(2)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div><div class="dot active"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" id="s3-next" onclick="goStep(4)" disabled>التالي ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 4: VARIABLES ══ -->
+<div class="step" id="s4">
+  <div class="step-body">
+    <div class="s-tag">المتغيّرات</div>
+    <h2 class="s-title">المتغيّر — صندوق يحفظ المعلومات 📦</h2>
+    <p class="s-lead">المتغيّر مثل صندوق له اسم — تضع فيه أي شيء وتستخدمه لاحقاً. شاهد كيف يعمل!</p>
+
+    <div class="code-editor">
+      <div class="editor-bar">
+        <div class="ed-dot" style="background:#ff5f57"></div>
+        <div class="ed-dot" style="background:#febc2e"></div>
+        <div class="ed-dot" style="background:#28c840"></div>
+        <span>main.py</span>
+        <button class="run-btn" onclick="runVars()">▶ شغّل</button>
+      </div>
+      <div class="code-area">
+        <div class="code-line"><span class="ln">1</span><span class="code-text"><span class="cm"># تعريف متغيّرات</span></span></div>
+        <div class="code-line"><span class="ln">2</span><span class="code-text"><span class="vr">اسم</span> = <span class="st">"أحمد"</span></span></div>
+        <div class="code-line"><span class="ln">3</span><span class="code-text"><span class="vr">عمر</span> = <span class="nm">14</span></span></div>
+        <div class="code-line"><span class="ln">4</span><span class="code-text"><span class="vr">مدينة</span> = <span class="st">"تونس"</span></span></div>
+        <div class="code-line"><span class="ln">5</span><span class="code-text">&nbsp;</span></div>
+        <div class="code-line"><span class="ln">6</span><span class="code-text"><span class="cm"># استخدام المتغيّرات</span></span></div>
+        <div class="code-line"><span class="ln">7</span><span class="code-text"><span class="fn">print</span>(<span class="st">"اسمي:"</span>, <span class="vr">اسم</span>)</span></div>
+        <div class="code-line"><span class="ln">8</span><span class="code-text"><span class="fn">print</span>(<span class="st">"عمري:"</span>, <span class="vr">عمر</span>)</span></div>
+        <div class="code-line"><span class="ln">9</span><span class="code-text"><span class="fn">print</span>(<span class="st">"من:"</span>, <span class="vr">مدينة</span>)</span></div>
+      </div>
+      <div class="output-area">
+        <div class="output-label">الناتج</div>
+        <div class="output-text" id="out-vars">اضغط شغّل لرؤية الناتج...</div>
+      </div>
+    </div>
+
+    <div class="hbox green">
+      <h3>✅ قواعد المتغيّرات</h3>
+      <p>
+        <strong>اسم = "نص"</strong> — لحفظ نص<br/>
+        <strong>عمر = 14</strong> — لحفظ رقم<br/>
+        الاسم على اليسار، القيمة على اليمين، وبينهما <strong>=</strong>
+      </p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(3)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+      <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" onclick="goStep(5)">فهمت المتغيّرات ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 5: CODE FILL ══ -->
+<div class="step" id="s5">
+  <div class="step-body">
+    <div class="s-tag">اكتب الكود! ✍️</div>
+    <h2 class="s-title">أكمل البرنامج بنفسك!</h2>
+    <p class="s-lead">اكتب الكلمات الناقصة في الأماكن المحددة لإكمال برنامج الترحيب.</p>
+
+    <div class="code-fill-wrap">
+      <div class="code-fill-bar">
+        <div class="ed-dot" style="background:#ff5f57"></div>
+        <div class="ed-dot" style="background:#febc2e"></div>
+        <div class="ed-dot" style="background:#28c840"></div>
+        <span>أكمل الكود</span>
+      </div>
+      <div class="code-fill-body" style="color:#e2e8f0">
+        <div style="margin-bottom:8px"><span class="cm" style="color:#6272a4"># برنامج الترحيب</span></div>
+        <div style="margin-bottom:8px">
+          <span style="color:#f9a8d4">اسم</span>
+          <span style="color:#e2e8f0"> = </span>
+          <input class="code-blank" id="blank1" placeholder='؟؟؟' style="width:100px"/>
+        </div>
+        <div style="margin-bottom:8px">
+          <span style="color:#86efac">print</span>
+          <span style="color:#e2e8f0">(</span>
+          <input class="code-blank" id="blank2" placeholder='؟؟؟' style="width:120px"/>
+          <span style="color:#e2e8f0">, اسم)</span>
+        </div>
+        <div>
+          <span style="color:#86efac">print</span>
+          <span style="color:#e2e8f0">(</span>
+          <span style="color:#fde68a">"مرحباً بك في Python!"</span>
+          <span style="color:#e2e8f0">)</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkFill()">✓ تحقق من الكود</button>
+      <div class="fill-fb" id="fill-fb"></div>
+    </div>
+
+    <div class="hbox gold">
+      <h3>💡 تلميح</h3>
+      <p>الفراغ الأول: اسمك بين علامتي اقتباس مثل <strong>"يوسف"</strong><br/>
+      الفراغ الثاني: النص الذي تريد طباعته قبل الاسم مثل <strong>"أهلاً"</strong></p>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(4)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+      <div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" id="s5-next" onclick="goStep(6)" disabled>التالي ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 6: QUIZ ══ -->
+<div class="step" id="s6">
+  <div class="step-body">
+    <div class="s-tag">اختبر نفسك 🎯</div>
+    <h2 class="s-title">سؤالان على Python!</h2>
+
+    <div style="background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:28px;box-shadow:var(--shadow);margin-bottom:16px">
+      <div class="quiz-q">١. ما الذي تفعله دالة print() في Python؟</div>
+      <div class="quiz-opts" id="q1">
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1fb')">تحفظ معلومة في متغيّر</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',true,'q1fb')">تطبع نصاً أو قيمة على الشاشة</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1fb')">تحذف الكود</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1fb')">تفتح ملفاً</button>
+      </div>
+      <div class="quiz-fb" id="q1fb"></div>
+    </div>
+
+    <div style="background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:28px;box-shadow:var(--shadow)" id="q2wrap" style="display:none">
+      <div class="quiz-q">٢. ما الناتج من هذا الكود؟<br/><code style="font-family:var(--font-code);background:#f1f5f9;padding:4px 10px;border-radius:6px;font-size:0.9rem;display:inline-block;margin-top:8px">x = 5<br/>print(x)</code></div>
+      <div class="quiz-opts" id="q2">
+        <button class="quiz-opt" onclick="quiz(this,'q2',false,'q2fb')">x</button>
+        <button class="quiz-opt" onclick="quiz(this,'q2',true,'q2fb','s6-next')">5</button>
+        <button class="quiz-opt" onclick="quiz(this,'q2',false,'q2fb')">print</button>
+        <button class="quiz-opt" onclick="quiz(this,'q2',false,'q2fb')">خطأ</button>
+      </div>
+      <div class="quiz-fb" id="q2fb"></div>
+    </div>
+  </div>
+  <div class="step-nav">
+    <button class="btn-prev" onclick="goStep(5)">→ السابق</button>
+    <div class="step-dots">
+      <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+      <div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div>
+    </div>
+    <button class="btn-next" id="s6-next" onclick="goStep(7)" disabled>التالي ←</button>
+  </div>
+</div>
+
+<!-- ══ STEP 7: CELEBRATION ══ -->
+<div class="step" id="s7">
+  <div class="step-body">
+    <div class="celebration">
+      <span class="cel-emoji">🐍</span>
+      <div class="xp-badge">🏅 +١٢٠ XP</div>
+      <h2 class="cel-title">مبرمج Python حقيقي!</h2>
+      <p class="cel-sub">كتبت أول كود Python بالعربية — تعرف الآن print() والمتغيّرات!<br/><strong>الدرس الثاني ينتظرك — ستتعلم الدوال وتبني برامج أقوى!</strong></p>
+      <div class="badge-row">
+        <div class="badge-item"><span class="bi">🐍</span><div><strong>مبرمج Python</strong>أول كود حقيقي</div></div>
+        <div class="badge-item"><span class="bi">📦</span><div><strong>صانع المتغيّرات</strong>تعلّمت التخزين</div></div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-next" onclick="finish()" style="padding:15px 40px;font-size:1rem">✅ احفظ تقدمي</button>
+        <button class="btn-prev" onclick="goStep(1)" style="padding:15px 24px">🔁 أعد الدرس</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let step=1, xp=0;
+const TOTAL=7;
+
+function goStep(n){
+  document.getElementById('s'+step).classList.remove('active');
+  step=n;
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('prog').style.width=((n-1)/(TOTAL-1)*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function addXP(a){
+  xp+=a;
+  const el=document.getElementById('xp');
+  el.textContent='⭐ '+xp+' XP';
+  el.style.transform='scale(1.4)';
+  setTimeout(()=>el.style.transform='',300);
+}
+
+// ── SIMULATED PYTHON OUTPUT ──
+function runPrint(){
+  const out=document.getElementById('out-print');
+  out.innerHTML='مرحباً يا عالم!<br/>أنا أتعلم Python<br/>بالعربية 🎉';
+  out.style.color='#86efac';
+  addXP(15);
+  document.getElementById('s3-next').disabled=false;
+}
+function runVars(){
+  const out=document.getElementById('out-vars');
+  out.innerHTML='اسمي: أحمد<br/>عمري: 14<br/>من: تونس';
+  out.style.color='#86efac';
+  addXP(15);
+}
+
+// ── CODE FILL ──
+function checkFill(){
+  const b1=document.getElementById('blank1').value.trim();
+  const b2=document.getElementById('blank2').value.trim();
+  const fb=document.getElementById('fill-fb');
+  // b1 should be a quoted string, b2 should be a quoted string
+  const b1ok = b1.startsWith('"') && b1.endsWith('"') && b1.length > 2;
+  const b2ok = b2.startsWith('"') && b2.endsWith('"') && b2.length > 2;
+  if(b1ok && b2ok){
+    document.getElementById('blank1').classList.add('correct');
+    document.getElementById('blank2').classList.add('correct');
+    fb.innerHTML='✅ <strong>ممتاز!</strong> كودك صحيح تماماً — البرنامج سيقول: '+b2+' '+b1.slice(1,-1)+'!';
+    fb.className='fill-fb show ok';
+    addXP(30);
+    document.getElementById('s5-next').disabled=false;
+  } else {
+    document.getElementById('blank1').classList.toggle('wrong',!b1ok);
+    document.getElementById('blank2').classList.toggle('wrong',!b2ok);
+    fb.innerHTML='❌ تذكّر: النصوص دائماً بين علامتي اقتباس <strong>"  "</strong>';
+    fb.className='fill-fb show no';
+    setTimeout(()=>{
+      document.getElementById('blank1').classList.remove('wrong');
+      document.getElementById('blank2').classList.remove('wrong');
+    },1000);
+  }
+}
+
+// ── QUIZ ──
+let q1done=false;
+function quiz(btn,qid,correct,fbId,nextId){
+  document.querySelectorAll('#'+qid+' .quiz-opt').forEach(o=>o.disabled=true);
+  const fb=document.getElementById(fbId);
+  if(correct){
+    btn.classList.add('correct');
+    const msgs={
+      q1fb:'✅ <strong>صحيح!</strong> print() تطبع أي شيء بين القوسين على الشاشة!',
+      q2fb:'✅ <strong>ممتاز!</strong> المتغيّر x يحمل القيمة 5، وprint(x) تطبع قيمته لا اسمه!'
+    };
+    fb.innerHTML=msgs[fbId]||'✅ صحيح!';
+    fb.className='quiz-fb show ok';
+    addXP(20);
+    if(qid==='q1'){ q1done=true; setTimeout(()=>{ document.getElementById('q2wrap').style.display='block'; },600); }
+    if(nextId) document.getElementById(nextId).disabled=false;
+  } else {
+    btn.classList.add('wrong');
+    fb.innerHTML='❌ ليس هذا — فكّر مجدداً!';
+    fb.className='quiz-fb show no';
+    setTimeout(()=>{
+      document.querySelectorAll('#'+qid+' .quiz-opt').forEach(o=>o.disabled=false);
+      btn.classList.remove('wrong'); fb.className='quiz-fb';
+    },1400);
+  }
+}
+
+// ── AUTH GUARD ──
+(async () => {
+  try {
+    const { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    const cfg = {apiKey:"AIzaSyBeD4ng-pNWSLgkrNmK1Re8FYnmCNCMBU8",authDomain:"fikr-app-fbdf7.firebaseapp.com",projectId:"fikr-app-fbdf7",storageBucket:"fikr-app-fbdf7.firebasestorage.app",messagingSenderId:"378212535527",appId:"1:378212535527:web:99331970433b4428dd2642"};
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const auth = getAuth(app);
+    const user = await new Promise(r => { const u = onAuthStateChanged(auth, x => { u(); r(x); }); });
+    if (!user) { window.location.href = 'index.html'; }
+  } catch(e) {}
+})();
+
+// ── FINISH ──
+async function finish() {
+  const btn = document.querySelector('.celebration .btn-next');
+  if (btn) { btn.disabled = true; btn.textContent = 'جارٍ الحفظ... ⏳'; }
+  try {
+    const { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    const { getFirestore, doc, getDoc, updateDoc, arrayUnion } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const cfg = {apiKey:"AIzaSyBeD4ng-pNWSLgkrNmK1Re8FYnmCNCMBU8",authDomain:"fikr-app-fbdf7.firebaseapp.com",projectId:"fikr-app-fbdf7",storageBucket:"fikr-app-fbdf7.firebasestorage.app",messagingSenderId:"378212535527",appId:"1:378212535527:web:99331970433b4428dd2642"};
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    const auth = getAuth(app); const db = getFirestore(app);
+    const user = await new Promise(r => { const u = onAuthStateChanged(auth, x => { u(); r(x); }); });
+    if (user) {
+      const snap = await getDoc(doc(db,'users',user.uid));
+      const curXP = snap.data()?.xp || 0;
+      await updateDoc(doc(db,'users',user.uid), { lessonsCompleted: arrayUnion('lesson-m1'), xp: curXP + 120 });
+    }
+    if (btn) { btn.textContent = '✅ تم الحفظ! جارٍ العودة...'; }
+  } catch(e) {}
+  setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+}
+</script>
+</body>
+</html>

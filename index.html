@@ -1556,10 +1556,10 @@
         <span class="tier-h-lock">🔒 يتطلب اشتراكاً</span>
       </div>
       <div class="lessons-grid">
-        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">١</div><div class="lesson-info"><div class="lesson-title">Python بالعربية</div><div class="lesson-desc">أول خطوة في عالم الكود</div></div><span class="lesson-badge lock-badge">🔒</span></div>
-        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">٢</div><div class="lesson-info"><div class="lesson-title">المتغيرات والدوال</div><div class="lesson-desc">أساس كل برنامج</div></div><span class="lesson-badge lock-badge">🔒</span></div>
-        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">٣</div><div class="lesson-info"><div class="lesson-title">معالجة البيانات</div><div class="lesson-desc">قوائم وحلقات Python</div></div><span class="lesson-badge lock-badge">🔒</span></div>
-        <div class="lesson-card locked" onclick="showUpgrade()"><div class="lesson-num">٤</div><div class="lesson-info"><div class="lesson-title">مشاريع تطبيقية</div><div class="lesson-desc">برامج حقيقية بالعربية</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+        <div class="lesson-card free" id="lcard-5" onclick="openLesson(5,'Python بالعربية')"><div class="lesson-num">١</div><div class="lesson-info"><div class="lesson-title">Python بالعربية</div><div class="lesson-desc">أول خطوة في عالم الكود</div></div><span class="lesson-badge free-badge" id="lbadge-5">مجاني</span></div>
+        <div class="lesson-card locked" id="lcard-6" onclick="showUpgrade()"><div class="lesson-num">٢</div><div class="lesson-info"><div class="lesson-title">المتغيرات والدوال</div><div class="lesson-desc">أساس كل برنامج</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+        <div class="lesson-card locked" id="lcard-7" onclick="showUpgrade()"><div class="lesson-num">٣</div><div class="lesson-info"><div class="lesson-title">معالجة البيانات</div><div class="lesson-desc">قوائم وحلقات Python</div></div><span class="lesson-badge lock-badge">🔒</span></div>
+        <div class="lesson-card locked" id="lcard-8" onclick="showUpgrade()"><div class="lesson-num">٤</div><div class="lesson-info"><div class="lesson-title">مشاريع تطبيقية</div><div class="lesson-desc">برامج حقيقية بالعربية</div></div><span class="lesson-badge lock-badge">🔒</span></div>
       </div>
     </div>
 
@@ -2080,7 +2080,7 @@
 
   // ══ STUDENT LESSON VIEWER ══
   window.openLesson = function(lessonId, title) {
-    const files = { 1: 'lesson1.html', 2: 'lesson2.html', 3: 'lesson3.html', 4: 'lesson4.html' };
+    const files = { 1:'lesson1.html', 2:'lesson2.html', 3:'lesson3.html', 4:'lesson4.html', 5:'lesson-m1.html', 6:'lesson-m2.html', 7:'lesson-m3.html', 8:'lesson-m4.html' };
     if (files[lessonId]) { window.location.href = files[lessonId]; return; }
     document.getElementById('lesson-modal-title').textContent = 'الدرس ' + lessonId + ': ' + title;
     document.getElementById('lesson-modal').style.display = 'flex';

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>فِكر · م٣ — معالجة البيانات</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;700;900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--gold:#c8922a;--gold-l:#e8b84b;--gold-pale:#fff8e6;--gold-dark:#92670f;--teal:#1a6b72;--teal-pale:#e0f5f7;--green:#16a34a;--green-pale:#dcfce7;--red:#dc2626;--red-pale:#fee2e2;--blue:#2563eb;--blue-pale:#dbeafe;--purple:#7c3aed;--purple-pale:#ede9fe;--orange:#ea580c;--orange-pale:#ffedd5;--bg:#fffdf5;--white:#fff;--text:#1a1d26;--soft:#64748b;--border:#e8dfc8;--font:'Tajawal',sans-serif;--font-ui:'Cairo',sans-serif;--font-code:'Fira Code',monospace;--r:16px;--r2:24px;--r3:36px;--shadow:0 4px 20px rgba(0,0,0,0.08);--shadow-lg:0 8px 40px rgba(0,0,0,0.12)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}button{cursor:pointer;border:none;font-family:inherit}
+.topbar{background:var(--white);border-bottom:2px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.06)}.logo{font-family:var(--font-ui);font-size:1.5rem;font-weight:900;color:var(--teal)}.logo span{color:var(--gold)}.lesson-pill{background:var(--gold-pale);color:var(--gold-dark);font-family:var(--font-ui);font-size:0.78rem;font-weight:700;padding:5px 14px;border-radius:99px;border:1.5px solid rgba(200,146,42,0.3)}.xp-pill{background:var(--gold-pale);color:var(--gold);font-family:var(--font-ui);font-size:0.82rem;font-weight:800;padding:5px 14px;border-radius:99px;border:1.5px solid rgba(200,146,42,0.2);transition:.3s}.btn-back{font-family:var(--font-ui);font-size:0.82rem;font-weight:700;color:var(--soft);background:var(--border);padding:8px 18px;border-radius:99px;transition:.2s}.btn-back:hover{background:#d4c9a8;color:var(--text)}
+.prog-wrap{height:6px;background:#ede8d5}.prog-fill{height:6px;background:linear-gradient(90deg,var(--gold),var(--gold-l));transition:width .5s cubic-bezier(.4,0,.2,1);border-radius:0 99px 99px 0}
+.step{display:none;animation:fadeUp .4s ease both}.step.active{display:block}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}.step-body{max-width:780px;margin:0 auto;padding:40px 20px 120px}
+.hero{background:linear-gradient(135deg,#fff8e6,#fef3c7,#fff8e6);border-radius:var(--r3);padding:52px 40px;text-align:center;border:2px solid rgba(200,146,42,0.2);box-shadow:var(--shadow);margin-bottom:24px}.hero-emoji{font-size:4rem;margin-bottom:16px;display:block;animation:bounce 2s infinite}@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}.hero-title{font-family:var(--font-ui);font-size:2rem;font-weight:900;color:var(--gold-dark);margin-bottom:10px}.hero-sub{font-size:1rem;color:var(--soft);line-height:1.8;max-width:480px;margin:0 auto 28px}.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.chip{display:flex;align-items:center;gap:6px;font-family:var(--font-ui);font-size:0.82rem;font-weight:700;padding:7px 16px;border-radius:99px;border:2px solid}.chip-gold{background:var(--gold-pale);color:var(--gold-dark);border-color:rgba(200,146,42,0.25)}.chip-green{background:var(--green-pale);color:var(--green);border-color:rgba(22,163,74,0.2)}.chip-orange{background:var(--orange-pale);color:var(--orange);border-color:rgba(234,88,12,0.2)}
+.s-tag{font-family:var(--font-ui);font-size:0.72rem;font-weight:700;color:var(--gold-dark);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}.s-title{font-family:var(--font-ui);font-size:1.6rem;font-weight:900;color:var(--text);margin-bottom:8px;line-height:1.3}.s-lead{font-size:0.97rem;color:var(--soft);line-height:1.8;margin-bottom:28px}
+.hbox{border-radius:var(--r2);padding:24px 28px;margin:20px 0;border-right:5px solid}.hbox.gold{background:var(--gold-pale);border-color:var(--gold)}.hbox.green{background:var(--green-pale);border-color:var(--green)}.hbox.orange{background:var(--orange-pale);border-color:var(--orange)}.hbox.blue{background:var(--blue-pale);border-color:var(--blue)}.hbox h3{font-family:var(--font-ui);font-size:0.95rem;font-weight:800;margin-bottom:8px}.hbox.gold h3{color:var(--gold-dark)}.hbox.green h3{color:var(--green)}.hbox.orange h3{color:var(--orange)}.hbox.blue h3{color:var(--blue)}.hbox p{font-size:0.92rem;color:var(--soft);line-height:1.85}.hbox strong{color:var(--text)}
+.code-editor{background:#1e1e2e;border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow-lg);margin:20px 0;border:2px solid rgba(200,146,42,0.2)}.editor-bar{background:#2a2a3e;padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06)}.ed-dot{width:10px;height:10px;border-radius:50%}.editor-bar span{font-family:var(--font-ui);font-size:0.78rem;color:rgba(255,255,255,0.35);margin-right:auto}.run-btn{font-family:var(--font-ui);font-size:0.78rem;font-weight:700;background:var(--green);color:#fff;padding:5px 14px;border-radius:8px;border:none;cursor:pointer;transition:.2s}.run-btn:hover{background:#15803d}.code-area{padding:20px 24px;font-family:var(--font-code);font-size:0.88rem;line-height:1.9}.code-line{display:flex;gap:16px}.ln{color:rgba(255,255,255,0.18);min-width:20px;text-align:left;user-select:none;flex-shrink:0;font-size:0.78rem;padding-top:2px}.kw{color:#c084fc}.fn{color:#86efac}.st{color:#fde68a}.cm{color:#6272a4}.nm{color:#93c5fd}.vr{color:#f9a8d4}.output-area{background:#0f1117;border-top:1px solid rgba(255,255,255,0.06);padding:14px 24px}.output-label{font-family:var(--font-ui);font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}.output-text{font-family:var(--font-code);font-size:0.88rem;color:#86efac;min-height:24px}
+/* LOOP VISUAL */
+.loop-visual{background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:24px;margin:20px 0;box-shadow:var(--shadow)}.loop-items{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.loop-item{background:var(--gold-pale);border:2px solid rgba(200,146,42,0.3);border-radius:var(--r);padding:10px 16px;font-family:var(--font-ui);font-size:0.88rem;font-weight:700;color:var(--gold-dark);transition:.3s;cursor:default}.loop-item.active{background:var(--gold);color:#fff;transform:scale(1.1);box-shadow:0 4px 12px rgba(200,146,42,0.35)}.loop-arrow{font-size:1.4rem;color:var(--gold);margin:8px 0;text-align:center}.loop-output{background:#0f1117;border-radius:10px;padding:12px 16px;font-family:var(--font-code);font-size:0.85rem;color:#86efac;min-height:40px;transition:.3s}.loop-btn{font-family:var(--font-ui);font-weight:800;font-size:0.88rem;color:#fff;background:linear-gradient(135deg,var(--gold),var(--gold-dark));padding:10px 22px;border-radius:99px;margin-top:12px;transition:.2s;box-shadow:0 4px 12px rgba(200,146,42,0.3)}.loop-btn:hover{transform:translateY(-2px)}
+.quiz-q{font-family:var(--font-ui);font-size:1.05rem;font-weight:800;color:var(--text);margin-bottom:18px;line-height:1.5}.quiz-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}.quiz-opt{background:var(--white);border:2.5px solid var(--border);border-radius:var(--r);padding:14px 20px;font-family:var(--font-ui);font-size:0.92rem;font-weight:600;color:var(--soft);text-align:right;transition:.2s}.quiz-opt:hover{border-color:var(--gold);background:var(--gold-pale);color:var(--gold-dark)}.quiz-opt.correct{border-color:var(--green);background:var(--green-pale);color:var(--green)}.quiz-opt.wrong{border-color:var(--red);background:var(--red-pale);color:var(--red);animation:shake .4s ease}@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}.quiz-fb{border-radius:var(--r);padding:14px 18px;font-family:var(--font-ui);font-size:0.9rem;display:none;margin-bottom:16px;line-height:1.7;border:2px solid;font-weight:600}.quiz-fb.show{display:block;animation:fadeUp .3s ease}.quiz-fb.ok{background:var(--green-pale);border-color:rgba(22,163,74,0.3);color:var(--green)}.quiz-fb.no{background:var(--red-pale);border-color:rgba(220,38,38,0.25);color:var(--red)}
+.celebration{background:linear-gradient(135deg,#fff8e6,#fef3c7,#fff8e6);border-radius:var(--r3);padding:56px 32px;text-align:center;border:2px solid rgba(200,146,42,0.2);box-shadow:var(--shadow-lg)}.cel-emoji{font-size:4rem;display:block;margin-bottom:20px;animation:bounce 1s infinite}.xp-badge{display:inline-flex;align-items:center;gap:10px;background:var(--gold-pale);border:2.5px solid rgba(200,146,42,0.4);border-radius:99px;padding:12px 28px;font-family:var(--font-ui);font-size:1.4rem;font-weight:900;color:var(--gold-dark);margin-bottom:20px;animation:popIn .5s .2s cubic-bezier(.34,1.56,.64,1) both}@keyframes popIn{from{transform:scale(0.4);opacity:0}to{transform:scale(1);opacity:1}}.cel-title{font-family:var(--font-ui);font-size:2rem;font-weight:900;color:var(--gold-dark);margin-bottom:10px}.cel-sub{font-size:1rem;color:var(--soft);line-height:1.8;margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto}.badge-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}.badge-item{background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:14px 20px;display:flex;align-items:center;gap:10px;font-family:var(--font-ui);font-size:0.85rem;color:var(--soft);box-shadow:var(--shadow)}.badge-item .bi{font-size:1.5rem}.badge-item strong{color:var(--text);display:block;font-size:0.88rem}
+.step-nav{position:fixed;bottom:0;right:0;left:0;background:rgba(255,253,245,0.95);backdrop-filter:blur(16px);border-top:2px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,0.06)}.btn-next{font-family:var(--font-ui);font-weight:900;font-size:0.95rem;color:#fff;background:linear-gradient(135deg,var(--gold),var(--gold-dark));padding:13px 32px;border-radius:99px;box-shadow:0 4px 16px rgba(200,146,42,0.4);transition:.2s}.btn-next:hover{transform:translateY(-2px)}.btn-next:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}.btn-prev{font-family:var(--font-ui);font-weight:700;font-size:0.9rem;color:var(--soft);background:#f1f5f9;padding:13px 22px;border-radius:99px;transition:.2s}.btn-prev:hover{background:#e2e8f0;color:var(--text)}.step-dots{display:flex;gap:6px;align-items:center}.dot{width:8px;height:8px;border-radius:50%;background:#e8dfc8;transition:.3s}.dot.active{background:var(--gold);width:24px;border-radius:99px}.dot.done{background:var(--green)}
+@media(max-width:640px){.step-body{padding:28px 14px 110px}.topbar{padding:0 14px}.hero{padding:36px 20px}}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <div class="logo">فِ<span>كر</span></div>
+  <div style="display:flex;align-items:center;gap:8px"><span class="lesson-pill">⚡ م٣ — المتوسط</span><span class="xp-pill" id="xp">⭐ ٠ XP</span></div>
+  <button class="btn-back" onclick="window.location.href='index.html'">← رجوع</button>
+</nav>
+<div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+
+<!-- STEP 1 -->
+<div class="step active" id="s1">
+  <div class="step-body">
+    <div class="hero">
+      <span class="hero-emoji">📊</span>
+      <h1 class="hero-title">القوائم والحلقات!</h1>
+      <p class="hero-sub">تعلّم كيف تخزن بيانات كثيرة وتعالجها تلقائياً — القوة الحقيقية لـ Python!</p>
+      <div class="chips"><div class="chip chip-gold">⏱️ ٤٥ دقيقة</div><div class="chip chip-green">🏅 ١٣٠ XP</div><div class="chip chip-orange">📊 قوائم وحلقات</div></div>
+    </div>
+    <div class="hbox gold"><h3>🎯 ماذا ستتعلم اليوم؟</h3><p>✦ القوائم — كيف تخزن ١٠٠ اسم في متغيّر واحد<br/>✦ حلقة for — معالجة كل عنصر تلقائياً<br/>✦ حلقة while — التكرار حتى شرط معين<br/>✦ بناء برنامج تقييم طلاب!</p></div>
+  </div>
+  <div class="step-nav"><div></div><div class="step-dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><button class="btn-next" onclick="goStep(2)">ابدأ الدرس ←</button></div>
+</div>
+
+<!-- STEP 2: LISTS -->
+<div class="step" id="s2">
+  <div class="step-body">
+    <div class="s-tag">القوائم — Lists</div>
+    <h2 class="s-title">القائمة — صندوق من الصناديق! 📦</h2>
+    <p class="s-lead">بدل تعريف متغيّر لكل طالب — ضعهم كلهم في قائمة واحدة!</p>
+    <div class="code-editor">
+      <div class="editor-bar"><div class="ed-dot" style="background:#ff5f57"></div><div class="ed-dot" style="background:#febc2e"></div><div class="ed-dot" style="background:#28c840"></div><span>lists.py</span><button class="run-btn" onclick="runLists()">▶ شغّل</button></div>
+      <div class="code-area">
+        <div class="code-line"><span class="ln">1</span><span><span class="cm"># قائمة الطلاب</span></span></div>
+        <div class="code-line"><span class="ln">2</span><span><span class="vr">طلاب</span> = [<span class="st">"أحمد"</span>, <span class="st">"سارة"</span>, <span class="st">"يوسف"</span>, <span class="st">"نور"</span>]</span></div>
+        <div class="code-line"><span class="ln">3</span><span>&nbsp;</span></div>
+        <div class="code-line"><span class="ln">4</span><span><span class="cm"># الوصول لعنصر</span></span></div>
+        <div class="code-line"><span class="ln">5</span><span><span class="fn">print</span>(<span class="st">"أول طالب:"</span>, <span class="vr">طلاب</span>[<span class="nm">0</span>])</span></div>
+        <div class="code-line"><span class="ln">6</span><span><span class="fn">print</span>(<span class="st">"عدد الطلاب:"</span>, <span class="fn">len</span>(<span class="vr">طلاب</span>))</span></div>
+        <div class="code-line"><span class="ln">7</span><span>&nbsp;</span></div>
+        <div class="code-line"><span class="ln">8</span><span><span class="cm"># إضافة طالب جديد</span></span></div>
+        <div class="code-line"><span class="ln">9</span><span><span class="vr">طلاب</span>.<span class="fn">append</span>(<span class="st">"محمد"</span>)</span></div>
+        <div class="code-line"><span class="ln">10</span><span><span class="fn">print</span>(<span class="st">"بعد الإضافة:"</span>, <span class="fn">len</span>(<span class="vr">طلاب</span>))</span></div>
+      </div>
+      <div class="output-area"><div class="output-label">الناتج</div><div class="output-text" id="out-lists">اضغط شغّل...</div></div>
+    </div>
+    <div class="hbox blue"><h3>💡 الفهرسة تبدأ من صفر</h3><p>طلاب[<strong>0</strong>] = أحمد (الأول)<br/>طلاب[<strong>1</strong>] = سارة (الثاني)<br/>طلاب[<strong>-1</strong>] = آخر عنصر دائماً</p></div>
+  </div>
+  <div class="step-nav"><button class="btn-prev" onclick="goStep(1)">→ السابق</button><div class="step-dots"><div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><button class="btn-next" id="s2-next" onclick="goStep(3)" disabled>التالي ←</button></div>
+</div>
+
+<!-- STEP 3: FOR LOOP VISUAL -->
+<div class="step" id="s3">
+  <div class="step-body">
+    <div class="s-tag">حلقة for</div>
+    <h2 class="s-title">for — زُر كل عنصر تلقائياً! 🔁</h2>
+    <p class="s-lead">بدل كتابة print لكل طالب — حلقة for تفعلها كلها تلقائياً. شاهد كيف تعمل خطوة بخطوة!</p>
+
+    <div class="loop-visual">
+      <div style="font-family:var(--font-ui);font-weight:800;color:var(--text);margin-bottom:12px">القائمة:</div>
+      <div class="loop-items">
+        <div class="loop-item" id="li-0">أحمد</div>
+        <div class="loop-item" id="li-1">سارة</div>
+        <div class="loop-item" id="li-2">يوسف</div>
+        <div class="loop-item" id="li-3">نور</div>
+      </div>
+      <div class="loop-arrow">↓ for طالب in طلاب:</div>
+      <div style="font-family:var(--font-ui);font-size:0.85rem;color:var(--soft);margin-bottom:8px">الناتج:</div>
+      <div class="loop-output" id="loop-out">اضغط شغّل لرؤية الحلقة تعمل...</div>
+      <button class="loop-btn" onclick="animateLoop()">▶ شغّل الحلقة</button>
+    </div>
+
+    <div class="code-editor">
+      <div class="editor-bar"><div class="ed-dot" style="background:#ff5f57"></div><div class="ed-dot" style="background:#febc2e"></div><div class="ed-dot" style="background:#28c840"></div><span>for_loop.py</span></div>
+      <div class="code-area">
+        <div class="code-line"><span class="ln">1</span><span><span class="vr">طلاب</span> = [<span class="st">"أحمد"</span>, <span class="st">"سارة"</span>, <span class="st">"يوسف"</span>, <span class="st">"نور"</span>]</span></div>
+        <div class="code-line"><span class="ln">2</span><span>&nbsp;</span></div>
+        <div class="code-line"><span class="ln">3</span><span><span class="kw">for</span> <span class="vr">طالب</span> <span class="kw">in</span> <span class="vr">طلاب</span>:</span></div>
+        <div class="code-line"><span class="ln">4</span><span style="padding-right:20px"><span class="fn">print</span>(<span class="st">"أهلاً يا"</span>, <span class="vr">طالب</span>)</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="step-nav"><button class="btn-prev" onclick="goStep(2)">→ السابق</button><div class="step-dots"><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><button class="btn-next" id="s3-next" onclick="goStep(4)" disabled>التالي ←</button></div>
+</div>
+
+<!-- STEP 4: WHILE LOOP -->
+<div class="step" id="s4">
+  <div class="step-body">
+    <div class="s-tag">حلقة while</div>
+    <h2 class="s-title">while — كرّر حتى يتحقق الشرط! ⏳</h2>
+    <p class="s-lead">while تكرر الكود طالما الشرط صحيح — مثل "استمر حتى يصل العداد لـ ٥"</p>
+    <div class="code-editor">
+      <div class="editor-bar"><div class="ed-dot" style="background:#ff5f57"></div><div class="ed-dot" style="background:#febc2e"></div><div class="ed-dot" style="background:#28c840"></div><span>while_loop.py</span><button class="run-btn" onclick="runWhile()">▶ شغّل</button></div>
+      <div class="code-area">
+        <div class="code-line"><span class="ln">1</span><span><span class="vr">عداد</span> = <span class="nm">1</span></span></div>
+        <div class="code-line"><span class="ln">2</span><span>&nbsp;</span></div>
+        <div class="code-line"><span class="ln">3</span><span><span class="kw">while</span> <span class="vr">عداد</span> &lt;= <span class="nm">5</span>:</span></div>
+        <div class="code-line"><span class="ln">4</span><span style="padding-right:20px"><span class="fn">print</span>(<span class="st">"الرقم:"</span>, <span class="vr">عداد</span>)</span></div>
+        <div class="code-line"><span class="ln">5</span><span style="padding-right:20px"><span class="vr">عداد</span> = <span class="vr">عداد</span> + <span class="nm">1</span></span></div>
+        <div class="code-line"><span class="ln">6</span><span>&nbsp;</span></div>
+        <div class="code-line"><span class="ln">7</span><span><span class="fn">print</span>(<span class="st">"انتهى العد!"</span>)</span></div>
+      </div>
+      <div class="output-area"><div class="output-label">الناتج</div><div class="output-text" id="out-while">اضغط شغّل...</div></div>
+    </div>
+    <div class="hbox orange"><h3>⚠️ تنبيه مهم</h3><p>دائماً تأكد أن الشرط سيصبح خاطئاً في النهاية — وإلا الحلقة تعمل للأبد!<br/>لهذا نكتب <strong>عداد = عداد + 1</strong> لنضمن التوقف.</p></div>
+  </div>
+  <div class="step-nav"><button class="btn-prev" onclick="goStep(3)">→ السابق</button><div class="step-dots"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><button class="btn-next" onclick="goStep(5)">التالي ←</button></div>
+</div>
+
+<!-- STEP 5: STUDENT GRADES PROJECT -->
+<div class="step" id="s5">
+  <div class="step-body">
+    <div class="s-tag">مشروع 🎯</div>
+    <h2 class="s-title">برنامج تقييم الطلاب!</h2>
+    <p class="s-lead">طبّق القوائم والحلقات معاً — برنامج يحسب متوسط درجات الطلاب!</p>
+    <div class="code-editor">
+      <div class="editor-bar"><div class="ed-dot" style="background:#ff5f57"></div><div class="ed-dot" style="background:#febc2e"></div><div class="ed-dot" style="background:#28c840"></div><span>grades.py</span><button class="run-btn" onclick="runGrades()">▶ شغّل</button></div>
+      <div class="code-area">
+        <div class="code-line"><span class="ln">1</span><span><span class="vr">درجات</span> = [<span class="nm">85</span>, <span class="nm">92</span>, <span class="nm">78</span>, <span class="nm">96</span>, <span class="nm">88</span>]</span></div>
+        <div class="code-line"><span class="ln">2</span><span>&nbsp;</span></div>
+        <div class="code-line"><span class="ln">3</span><span><span class="vr">مجموع</span> = <span class="nm">0</span></span></div>
+        <div class="code-line"><span class="ln">4</span><span><span class="kw">for</span> <span class="vr">درجة</span> <span class="kw">in</span> <span class="vr">درجات</span>:</span></div>
+        <div class="code-line"><span class="ln">5</span><span style="padding-right:20px"><span class="vr">مجموع</span> = <span class="vr">مجموع</span> + <span class="vr">درجة</span></span></div>
+        <div class="code-line"><span class="ln">6</span><span>&nbsp;</span></div>
+        <div class="code-line"><span class="ln">7</span><span><span class="vr">متوسط</span> = <span class="vr">مجموع</span> / <span class="fn">len</span>(<span class="vr">درجات</span>)</span></div>
+        <div class="code-line"><span class="ln">8</span><span><span class="fn">print</span>(<span class="st">"المتوسط:"</span>, <span class="vr">متوسط</span>)</span></div>
+        <div class="code-line"><span class="ln">9</span><span>&nbsp;</span></div>
+        <div class="code-line"><span class="ln">10</span><span><span class="kw">if</span> <span class="vr">متوسط</span> >= <span class="nm">90</span>:</span></div>
+        <div class="code-line"><span class="ln">11</span><span style="padding-right:20px"><span class="fn">print</span>(<span class="st">"ممتاز! 🏆"</span>)</span></div>
+        <div class="code-line"><span class="ln">12</span><span><span class="kw">else</span>:</span></div>
+        <div class="code-line"><span class="ln">13</span><span style="padding-right:20px"><span class="fn">print</span>(<span class="st">"جيد جداً! 👍"</span>)</span></div>
+      </div>
+      <div class="output-area"><div class="output-label">الناتج</div><div class="output-text" id="out-grades">اضغط شغّل...</div></div>
+    </div>
+  </div>
+  <div class="step-nav"><button class="btn-prev" onclick="goStep(4)">→ السابق</button><div class="step-dots"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div><button class="btn-next" id="s5-next" onclick="goStep(6)" disabled>التالي ←</button></div>
+</div>
+
+<!-- STEP 6: QUIZ -->
+<div class="step" id="s6">
+  <div class="step-body">
+    <div class="s-tag">اختبر نفسك 🎯</div>
+    <h2 class="s-title">سؤالان على القوائم والحلقات!</h2>
+    <div style="background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:28px;box-shadow:var(--shadow);margin-bottom:16px">
+      <div class="quiz-q">١. ما الفهرس الصحيح للوصول لأول عنصر في القائمة؟</div>
+      <div class="quiz-opts" id="q1">
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1fb')">1</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',true,'q1fb')">0</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1fb')">-1</button>
+        <button class="quiz-opt" onclick="quiz(this,'q1',false,'q1fb')">أول</button>
+      </div>
+      <div class="quiz-fb" id="q1fb"></div>
+    </div>
+    <div style="background:var(--white);border:2px solid var(--border);border-radius:var(--r2);padding:28px;box-shadow:var(--shadow)" id="q2wrap">
+      <div class="quiz-q">٢. ما الفرق بين for و while؟</div>
+      <div class="quiz-opts" id="q2">
+        <button class="quiz-opt" onclick="quiz(this,'q2',false,'q2fb')">لا فرق</button>
+        <button class="quiz-opt" onclick="quiz(this,'q2',true,'q2fb','s6-next')">for تمشي على عناصر، while تكرر حتى شرط</button>
+        <button class="quiz-opt" onclick="quiz(this,'q2',false,'q2fb')">for أسرع دائماً</button>
+        <button class="quiz-opt" onclick="quiz(this,'q2',false,'q2fb')">while للقوائم فقط</button>
+      </div>
+      <div class="quiz-fb" id="q2fb"></div>
+    </div>
+  </div>
+  <div class="step-nav"><button class="btn-prev" onclick="goStep(5)">→ السابق</button><div class="step-dots"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div></div><button class="btn-next" id="s6-next" onclick="goStep(7)" disabled>التالي ←</button></div>
+</div>
+
+<!-- STEP 7: CELEBRATION -->
+<div class="step" id="s7">
+  <div class="step-body">
+    <div class="celebration">
+      <span class="cel-emoji">📊</span>
+      <div class="xp-badge">🏅 +١٣٠ XP</div>
+      <h2 class="cel-title">أتقنت القوائم والحلقات!</h2>
+      <p class="cel-sub">الآن تستطيع معالجة بيانات كثيرة تلقائياً — هذا ما يفعله كل مبرمج يومياً!<br/><strong>الدرس الأخير: مشروع تطبيقي كامل بـ Python!</strong></p>
+      <div class="badge-row">
+        <div class="badge-item"><span class="bi">📋</span><div><strong>محلل البيانات</strong>أتقنت القوائم</div></div>
+        <div class="badge-item"><span class="bi">🔁</span><div><strong>سيد الحلقات</strong>for و while</div></div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-next" onclick="finish()" style="padding:15px 40px;font-size:1rem">✅ احفظ تقدمي</button>
+        <button class="btn-prev" onclick="goStep(1)" style="padding:15px 24px">🔁 أعد الدرس</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let step=1,xp=0;const TOTAL=7;
+function goStep(n){document.getElementById('s'+step).classList.remove('active');step=n;document.getElementById('s'+n).classList.add('active');document.getElementById('prog').style.width=((n-1)/(TOTAL-1)*100)+'%';window.scrollTo({top:0,behavior:'smooth'});}
+function addXP(a){xp+=a;const el=document.getElementById('xp');el.textContent='⭐ '+xp+' XP';el.style.transform='scale(1.4)';setTimeout(()=>el.style.transform='',300);}
+
+function runLists(){document.getElementById('out-lists').innerHTML='أول طالب: أحمد<br/>عدد الطلاب: 4<br/>بعد الإضافة: 5';addXP(15);document.getElementById('s2-next').disabled=false;}
+function runWhile(){document.getElementById('out-while').innerHTML='الرقم: 1<br/>الرقم: 2<br/>الرقم: 3<br/>الرقم: 4<br/>الرقم: 5<br/>انتهى العد!';addXP(15);}
+function runGrades(){document.getElementById('out-grades').innerHTML='المتوسط: 87.8<br/>جيد جداً! 👍';addXP(20);document.getElementById('s5-next').disabled=false;}
+
+let loopRunning=false;
+function animateLoop(){
+  if(loopRunning)return;loopRunning=true;
+  const names=['أحمد','سارة','يوسف','نور'];
+  let out='';let i=0;
+  document.getElementById('loop-out').textContent='';
+  function step(){
+    if(i>0) document.getElementById('li-'+(i-1)).classList.remove('active');
+    if(i>=names.length){loopRunning=false;document.getElementById('s3-next').disabled=false;addXP(20);return;}
+    document.getElementById('li-'+i).classList.add('active');
+    out+=(out?'<br/>':'')+'أهلاً يا '+names[i];
+    document.getElementById('loop-out').innerHTML=out;
+    i++;setTimeout(step,700);
+  }
+  step();
+}
+
+let q1done=false;
+function quiz(btn,qid,correct,fbId,nextId){
+  document.querySelectorAll('#'+qid+' .quiz-opt').forEach(o=>o.disabled=true);
+  const fb=document.getElementById(fbId);
+  if(correct){
+    btn.classList.add('correct');
+    const msgs={q1fb:'✅ <strong>صحيح!</strong> الفهرسة في Python تبدأ دائماً من 0!',q2fb:'✅ <strong>ممتاز!</strong> for للعناصر، while للشروط — كل واحدة لها مكانها!'};
+    fb.innerHTML=msgs[fbId]||'✅ صحيح!';fb.className='quiz-fb show ok';addXP(20);
+    if(qid==='q1'){q1done=true;setTimeout(()=>{document.getElementById('q2wrap').style.display='block';},600);}
+    if(nextId) document.getElementById(nextId).disabled=false;
+  } else {
+    btn.classList.add('wrong');fb.innerHTML='❌ ليس هذا!';fb.className='quiz-fb show no';
+    setTimeout(()=>{document.querySelectorAll('#'+qid+' .quiz-opt').forEach(o=>o.disabled=false);btn.classList.remove('wrong');fb.className='quiz-fb';},1400);
+  }
+}
+
+(async()=>{
+  try{
+    const{initializeApp,getApps}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const{getAuth,onAuthStateChanged}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    const{getFirestore,doc,getDoc}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const cfg={apiKey:"AIzaSyBeD4ng-pNWSLgkrNmK1Re8FYnmCNCMBU8",authDomain:"fikr-app-fbdf7.firebaseapp.com",projectId:"fikr-app-fbdf7",storageBucket:"fikr-app-fbdf7.firebasestorage.app",messagingSenderId:"378212535527",appId:"1:378212535527:web:99331970433b4428dd2642"};
+    const app=getApps().length?getApps()[0]:initializeApp(cfg);
+    const auth=getAuth(app);const db=getFirestore(app);
+    const user=await new Promise(r=>{const u=onAuthStateChanged(auth,x=>{u();r(x);});});
+    if(!user){window.location.href='index.html';return;}
+    const snap=await getDoc(doc(db,'users',user.uid));
+    if(snap.data()?.subscription!=='active'){window.location.href='index.html';}
+  }catch(e){}
+})();
+
+async function finish(){
+  const btn=document.querySelector('.celebration .btn-next');
+  if(btn){btn.disabled=true;btn.textContent='جارٍ الحفظ... ⏳';}
+  try{
+    const{initializeApp,getApps}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const{getAuth,onAuthStateChanged}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    const{getFirestore,doc,getDoc,updateDoc,arrayUnion}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const cfg={apiKey:"AIzaSyBeD4ng-pNWSLgkrNmK1Re8FYnmCNCMBU8",authDomain:"fikr-app-fbdf7.firebaseapp.com",projectId:"fikr-app-fbdf7",storageBucket:"fikr-app-fbdf7.firebasestorage.app",messagingSenderId:"378212535527",appId:"1:378212535527:web:99331970433b4428dd2642"};
+    const app=getApps().length?getApps()[0]:initializeApp(cfg);
+    const auth=getAuth(app);const db=getFirestore(app);
+    const user=await new Promise(r=>{const u=onAuthStateChanged(auth,x=>{u();r(x);});});
+    if(user){const snap=await getDoc(doc(db,'users',user.uid));await updateDoc(doc(db,'users',user.uid),{lessonsCompleted:arrayUnion('lesson-m3'),xp:(snap.data()?.xp||0)+130});}
+    if(btn){btn.textContent='✅ تم الحفظ! جارٍ العودة...';}
+  }catch(e){}
+  setTimeout(()=>{window.location.href='index.html';},1000);
+}
+</script>
+</body>
+</html>
