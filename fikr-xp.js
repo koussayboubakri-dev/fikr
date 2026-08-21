@@ -121,12 +121,12 @@ export class FikrXP {
 
   async _write() {
     try {
-      const { updateDoc } = await import(
+      const { updateDoc, arrayUnion } = await import(
         "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"
       );
       await updateDoc(this.ref, { 
         xp: this.xp,
-        completedMissions: this.completedMissions 
+        completedMissions: arrayUnion(...this.completedMissions) 
       });
     } catch (e) {
       console.warn('[FikrXP] Write failed:', e.message);
